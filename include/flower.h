@@ -28,6 +28,7 @@
 
 #include "labeling.h"
 #include "loss.h"
+#include "metrics.h"
 #include "optimizers.h"
 #include "petal.h"
 
@@ -54,12 +55,11 @@ float *flower_predict(flower_s *flower, float *input);
 
 float *flower_forward(flower_s *flower, float *input, bool training);
 
-float flower_train_batch(flower_s *flower, uint8_t loss_type, optimizer_s *optimizer, float **inputs_train,
-                         float **outputs_true_train, labels_s **outputs_true_train_sparse, uint32_t train_length,
-                         float **inputs_test, float **outputs_true_test, labels_s **outputs_true_test_sparse,
-                         uint32_t test_length, bool log_accuracy);
-
-float flower_calculate_accuracy(float *predicted, float *expected, uint32_t length, float threshold);
+float flower_train(flower_s *flower, uint8_t loss_type, optimizer_s *optimizer, metrics_s *metrics,
+                   float **inputs_train, float **outputs_true_train, labels_s **outputs_true_train_sparse,
+                   uint32_t train_length, float **inputs_validation, float **outputs_true_validation,
+                   labels_s **outputs_true_validation_sparse, uint32_t validation_length, uint32_t batch_size,
+                   uint32_t epochs);
 
 size_t flower_estimate_min_size(flower_s *flower);
 

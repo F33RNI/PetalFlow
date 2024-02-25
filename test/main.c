@@ -32,6 +32,7 @@
 #include "errors.h"
 #include "flower.h"
 #include "loss.h"
+#include "metrics.h"
 #include "optimizers.h"
 #include "petal.h"
 
@@ -566,7 +567,7 @@ float **dense_generate_input_data(uint32_t rows, uint32_t cols) {
 
         // Populate the internal array with random float values
         for (uint32_t col = 0; col < cols; ++col) {
-            array[row][col] = (float) (int16_t) (((float) rand() / RAND_MAX) * 20 - 10);
+            array[row][col] = (float) (int16_t) (((float) rand() / RAND_MAX) * 10 - 5);
         }
     }
     return array;
@@ -621,23 +622,23 @@ uint8_t test_dense() {
     // Print about message
     printf("\nTesting simple classifier using 3 dense layers\n");
 
-    // Test size
-    uint32_t train_dataset_length = 160;
-    uint32_t test_dataset_length = 40;
-    uint32_t epochs_number = 50;
+    // 500 numbers from -5 to 5: 80% train, 20% validation
+    uint32_t train_dataset_length = 400;
+    uint32_t validation_dataset_length = 100;
 
-    // Generate test datasets
+    // Generate validation datasets
     float **train_dataset_inputs = dense_generate_input_data(train_dataset_length, 2U);
-    float **test_dataset_inputs = dense_generate_input_data(test_dataset_length, 2U);
-    if (!train_dataset_inputs || !test_dataset_inputs) {
-        printf("train_dataset_inputs or test_dataset_inputs allocation failed\n");
+    float **validation_dataset_inputs = dense_generate_input_data(validation_dataset_length, 2U);
+    if (!train_dataset_inputs || !validation_dataset_inputs) {
+        printf("train_dataset_inputs or validation_dataset_inputs allocation failed\n");
         return 1U;
     }
 
     // Generate outputs
     float **train_dataset_outputs = dense_generate_output_data(train_dataset_inputs, train_dataset_length);
-    float **test_dataset_outputs = dense_generate_output_data(test_dataset_inputs, test_dataset_length);
-    if (!train_dataset_outputs || !test_dataset_outputs) {
+    float **validation_dataset_outputs =
+        dense_generate_output_data(validation_dataset_inputs, validation_dataset_length);
+    if (!train_dataset_outputs || !validation_dataset_outputs) {
         printf("train_dataset_outputs or est_dataset_outputs allocation failed\n");
         return 1U;
     }
@@ -675,9 +676,6 @@ uint8_t test_dense() {
     printf("hidden 2 -> out bias weights:\n");
     print_array(petal_output->bias_weights->weights, 1U, 3U, 1U);
 
-    // Initialize optimizer
-    optimizer_s optimizer = (optimizer_s){OPTIMIZER_ADAM, 0.2f, 0.f, 0.8f, 0.9f};
-
     // Initialize flower
     petal_s *petals[] = {petal_hidden1, petal_hidden2, petal_output};
     flower_s *flower = flower_init(petals, 3U);
@@ -686,14 +684,25 @@ uint8_t test_dense() {
     printf("Before training [1.0, 2.0] -> [1 > 2, 1 == 2, 1 < 2]:\t\t");
     print_array(flower_predict(flower, (float[]){1.f, 2.f}), 1U, 3U, 1U);
 
-    // Train
-    for (uint32_t epoch_i = 0; epoch_i < epochs_number; ++epoch_i) {
-        printf("Epoch = %u\n", epoch_i);
-        flower_train_batch(flower, LOSS_CATEGORICAL_CROSSENTROPY, &optimizer, train_dataset_inputs,
-                           train_dataset_outputs, NULL, train_dataset_length, test_dataset_inputs, test_dataset_outputs,
-                           NULL, test_dataset_length, true);
-    }
+    // Initialize optimizer (Type, learning rate, momentum, beta 1, beta 2)
+    optimizer_s optimizer = (optimizer_s){OPTIMIZER_ADAM, .1f, 0.f, .89f, .99f};
 
+    // Initialize metrics
+    metrics_s *metrics = metrics_init(1);
+    metrics_add(metrics, METRICS_TIME_ELAPSED);
+    metrics_add(metrics, METRICS_LOSS_TRAIN);
+    metrics_add(metrics, METRICS_ACCURACY_TRAIN);
+    metrics_add(metrics, METRICS_LOSS_VALIDATION);
+    metrics_add(metrics, METRICS_ACCURACY_VALIDATION);
+
+    // Train
+    uint32_t epochs = 10;
+    uint32_t batch_size = 50;
+    flower_train(flower, LOSS_CATEGORICAL_CROSSENTROPY, &optimizer, metrics, train_dataset_inputs,
+                 train_dataset_outputs, NULL, train_dataset_length, validation_dataset_inputs,
+                 validation_dataset_outputs, NULL, validation_dataset_length, batch_size, epochs);
+
+    // Test training result on new data
     printf("After training [1.0, 20.0] -> [1 > 2, 1 == 2, 1 < 2]:\t\t");
     print_array(flower_predict(flower, (float[]){1.f, 20.f}), 1U, 3U, 1U);
     printf("After training [5.0, 5.0] -> [1 > 2, 1 == 2, 1 < 2]:\t\t");
@@ -714,6 +723,9 @@ uint8_t test_dense() {
 
     // Destroy flower without destroying petals
     flower_destroy(flower, false, false, false);
+
+    // Destroy metrics
+    metrics_destroy(metrics);
 
     return 0U;
 }

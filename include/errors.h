@@ -39,7 +39,8 @@
 #define ERROR_OPTIMIZER_WRONG_TYPE        11U
 #define ERROR_FLOWER_NO_PETALS            12U
 #define ERROR_LOSS_WRONG_TYPE             13U
+#define ERROR_WRONG_BATCH_SIZE            14U
 
-extern const char *error_to_str[14];
+extern const char *error_to_str[15];
 
 #endif

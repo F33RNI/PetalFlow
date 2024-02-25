@@ -17,6 +17,7 @@ gcc -o petalflow test/main.c src/*.c -Iinclude -DLOGGING -DLOGGER_LEVEL=0 -lm
 <summary>Output</summary>
 
 ```text
+
 Testing activation functions on data:   -2.0000 -1.0000 0.0000  1.0000  2.0000
 
 Linear activation with a=0.50, c=1.00:  0.0000  0.5000  1.0000  1.5000  2.0000
@@ -68,7 +69,7 @@ Derivative:                             0.0707  0.4200  1.0000  0.4200  0.0707
 Derivative approximation:               0.0708  0.4204  1.0000  0.4196  0.0706
 Passed
 
-[2024-02-24 15:21:08] [INFO] [activation_destroy] Destroying activation struct with address: 0x55b2aca636b0
+[2024-02-25 15:09:53] [INFO] [activation_destroy] Destroying activation struct with address: 0x55c3c72f66b0
 --------------------------------------------------------------------------------
 
 Testing loss functions on predicted data:       0.0000  0.5000  0.1000  0.9000  0.4000  0.9000
@@ -104,29 +105,29 @@ Derivative:                                     -0.0000 -0.0000 -0.0000 -1.1111 
 Derivative approximation:                       0.0000  0.0000  0.0000  -1.1105 0.0000  0.0000
 Passed
 
-[2024-02-24 15:21:08] [INFO] [loss_destroy] Destroying loss struct with address: 0x55b2aca639d0
+[2024-02-25 15:09:53] [INFO] [loss_destroy] Destroying loss struct with address: 0x55c3c72f69d0
 --------------------------------------------------------------------------------
 
 Testing dropout on array with size 50 and ratio: 0.20
-[2024-02-24 15:21:08] [INFO] [bit_array_init] Initializing bit array with size: 50 bits
+[2024-02-25 15:09:53] [INFO] [bit_array_init] Initializing bit array with size: 50 bits
 Array of bits: 00000000000010010000010000010000010110000011000001
 Bits set: 10 (20.0000%)
-[2024-02-24 15:21:08] [INFO] [bit_array_destroy] Destroying bit array struct with address: 0x55b2aca63aa0
+[2024-02-25 15:09:53] [INFO] [bit_array_destroy] Destroying bit array struct with address: 0x55c3c72f6aa0
 Passed
 
 --------------------------------------------------------------------------------
 
 Testing normalization petals
-[2024-02-24 15:21:08] [INFO] [petal_init] Initializing petal with type: 1
+[2024-02-25 15:09:53] [INFO] [petal_init] Initializing petal with type: 1
 1D (PETAL_TYPE_NORMALIZE_ALL) Input data:
 2.0000  0.0000  10.0000 -1.0000 1.0000  8.0000  2.0000  1.5000  0.5000  -0.4000 -0.1000 0.1000
 Normalized:
 -0.4545 -0.8182 1.0000  -1.0000 -0.6364 0.6364  -0.4545 -0.5455 -0.7273 -0.8909 -0.8364 -0.8000
 Output range: -1.0000 to 1.0000
 Passed
-[2024-02-24 15:21:08] [INFO] [petal_destroy] Destroying petal struct with address: 0x55b2aca63ae0
+[2024-02-25 15:09:53] [INFO] [petal_destroy] Destroying petal struct with address: 0x55c3c72f6ae0
 
-[2024-02-24 15:21:08] [INFO] [petal_init] Initializing petal with type: 2
+[2024-02-25 15:09:53] [INFO] [petal_init] Initializing petal with type: 2
 2D (PETAL_TYPE_NORMALIZE_IN_ROWS) Input data:
 2.0000  0.0000  10.0000 -1.0000
 1.0000  8.0000  2.0000  1.5000
@@ -137,9 +138,9 @@ Normalized:
 1.0000  -1.0000 -0.3333 0.1111
 Output range: -1.0000 to 1.0000
 Passed
-[2024-02-24 15:21:08] [INFO] [petal_destroy] Destroying petal struct with address: 0x55b2aca63bd0
+[2024-02-25 15:09:53] [INFO] [petal_destroy] Destroying petal struct with address: 0x55c3c72f6bd0
 
-[2024-02-24 15:21:08] [INFO] [petal_init] Initializing petal with type: 3
+[2024-02-25 15:09:53] [INFO] [petal_init] Initializing petal with type: 3
 3D (PETAL_TYPE_NORMALIZE_IN_CHANNELS) Input data:
 (2.0000, 0.0000)        (10.0000, -1.0000)
 (1.0000, 8.0000)        (2.0000, 1.5000)
@@ -150,149 +151,117 @@ Normalized:
 (-0.8812, -0.8667)      (-1.0000, -0.7556)
 Output range: -1.0000 to 1.0000
 Passed
-[2024-02-24 15:21:08] [INFO] [petal_destroy] Destroying petal struct with address: 0x55b2aca63cc0
+[2024-02-25 15:09:53] [INFO] [petal_destroy] Destroying petal struct with address: 0x55c3c72f6cc0
 
 --------------------------------------------------------------------------------
 
 Testing simple classifier using 3 dense layers
-[2024-02-24 15:21:08] [INFO] [petal_init] Initializing petal with type: 4
-[2024-02-24 15:21:08] [INFO] [weights_init] Initializing weights using 4 initializer
-[2024-02-24 15:21:08] [INFO] [weights_init] Initializing weights using 0 initializer
-[2024-02-24 15:21:08] [INFO] [petal_init] Initializing petal with type: 4
-[2024-02-24 15:21:08] [INFO] [weights_init] Initializing weights using 4 initializer
-[2024-02-24 15:21:08] [INFO] [weights_init] Initializing weights using 0 initializer
-[2024-02-24 15:21:08] [INFO] [petal_init] Initializing petal with type: 4
-[2024-02-24 15:21:08] [INFO] [weights_init] Initializing weights using 4 initializer
-[2024-02-24 15:21:08] [INFO] [weights_init] Initializing weights using 0 initializer
+[2024-02-25 15:09:53] [INFO] [petal_init] Initializing petal with type: 4
+[2024-02-25 15:09:53] [INFO] [weights_init] Initializing weights using 4 initializer
+[2024-02-25 15:09:53] [INFO] [weights_init] Initializing weights using 0 initializer
+[2024-02-25 15:09:53] [INFO] [petal_init] Initializing petal with type: 4
+[2024-02-25 15:09:53] [INFO] [weights_init] Initializing weights using 4 initializer
+[2024-02-25 15:09:53] [INFO] [weights_init] Initializing weights using 0 initializer
+[2024-02-25 15:09:53] [INFO] [petal_init] Initializing petal with type: 4
+[2024-02-25 15:09:53] [INFO] [weights_init] Initializing weights using 4 initializer
+[2024-02-25 15:09:53] [INFO] [weights_init] Initializing weights using 0 initializer
 In -> hidden 1 weights:
-0.6161  2.8460
-0.6274  -1.7371
+0.7836  -1.4375
+-2.6656 0.2539
 In -> hidden 1 bias weights:
 0.0000  0.0000
 hidden 1 -> hidden 2 weights:
--1.5716 -0.0869
--0.6270 0.7464
+-1.0741 -2.2841
+0.2285  0.2800
 hidden 1 -> hidden 2 bias weights:
 0.0000  0.0000
 hidden 2 -> out weights:
--1.3622 -0.9300 0.8285
--0.3411 1.0539  0.5326
+0.3229  0.0141  -0.5694
+-0.8443 -1.9946 -0.8646
 hidden 2 -> out bias weights:
 0.0000  0.0000  0.0000
-[2024-02-24 15:21:08] [INFO] [flower_init] Initializing flower with 3 petals
+[2024-02-25 15:09:53] [INFO] [flower_init] Initializing flower with 3 petals
 Before training [1.0, 2.0] -> [1 > 2, 1 == 2, 1 < 2]:           0.3333  0.3333  0.3333
-Epoch = 0
-[Train] _loss:  1.098612, accuracy:  43.33% avg | [Test] _loss:  1.997866 avg, accuracy:  56.67% avg
-Epoch = 1
-[Train] _loss:  1.236036, accuracy:  54.17% avg | [Test] _loss:  1.476556 avg, accuracy:  58.33% avg
-Epoch = 2
-[Train] _loss:  1.396040, accuracy:  57.08% avg | [Test] _loss:  0.949210 avg, accuracy:  60.00% avg
-Epoch = 3
-[Train] _loss:  1.619377, accuracy:  60.42% avg | [Test] _loss:  0.854820 avg, accuracy:  61.67% avg
-Epoch = 4
-[Train] _loss:  1.865430, accuracy:  65.42% avg | [Test] _loss:  0.853722 avg, accuracy:  68.33% avg
-Epoch = 5
-[Train] _loss:  2.081839, accuracy:  72.50% avg | [Test] _loss:  0.798336 avg, accuracy:  68.33% avg
-Epoch = 6
-[Train] _loss:  2.271788, accuracy:  73.75% avg | [Test] _loss:  0.758320 avg, accuracy:  68.33% avg
-Epoch = 7
-[Train] _loss:  2.444878, accuracy:  73.75% avg | [Test] _loss:  0.663603 avg, accuracy:  68.33% avg
-Epoch = 8
-[Train] _loss:  2.602095, accuracy:  62.50% avg | [Test] _loss:  0.668422 avg, accuracy:  68.33% avg
-Epoch = 9
-[Train] _loss:  2.732192, accuracy:  62.50% avg | [Test] _loss:  0.666517 avg, accuracy:  68.33% avg
-Epoch = 10
-[Train] _loss:  2.815355, accuracy:  62.50% avg | [Test] _loss:  0.627327 avg, accuracy:  68.33% avg
-Epoch = 11
-[Train] _loss:  2.845786, accuracy:  62.50% avg | [Test] _loss:  0.591590 avg, accuracy:  68.33% avg
-Epoch = 12
-[Train] _loss:  2.832634, accuracy:  62.50% avg | [Test] _loss:  0.606988 avg, accuracy:  68.33% avg
-Epoch = 13
-[Train] _loss:  2.790113, accuracy:  62.50% avg | [Test] _loss:  0.560583 avg, accuracy:  80.00% avg
-Epoch = 14
-[Train] _loss:  2.733489, accuracy:  82.50% avg | [Test] _loss:  0.549176 avg, accuracy:  80.00% avg
-Epoch = 15
-[Train] _loss:  2.667285, accuracy:  82.92% avg | [Test] _loss:  0.581600 avg, accuracy:  80.00% avg
-Epoch = 16
-[Train] _loss:  2.596571, accuracy:  84.17% avg | [Test] _loss:  0.561822 avg, accuracy:  81.67% avg
-Epoch = 17
-[Train] _loss:  2.517557, accuracy:  84.58% avg | [Test] _loss:  0.515555 avg, accuracy:  83.33% avg
-Epoch = 18
-[Train] _loss:  2.422116, accuracy:  85.83% avg | [Test] _loss:  0.496421 avg, accuracy:  83.33% avg
-Epoch = 19
-[Train] _loss:  2.306513, accuracy:  85.83% avg | [Test] _loss:  0.512657 avg, accuracy:  83.33% avg
-Epoch = 20
-[Train] _loss:  2.179319, accuracy:  86.67% avg | [Test] _loss:  0.484845 avg, accuracy:  85.00% avg
-Epoch = 21
-[Train] _loss:  2.049450, accuracy:  87.92% avg | [Test] _loss:  0.439805 avg, accuracy:  86.67% avg
-Epoch = 22
-[Train] _loss:  1.931860, accuracy:  88.75% avg | [Test] _loss:  0.430609 avg, accuracy:  86.67% avg
-Epoch = 23
-[Train] _loss:  1.838300, accuracy:  88.75% avg | [Test] _loss:  0.428415 avg, accuracy:  88.33% avg
-Epoch = 24
-[Train] _loss:  1.761157, accuracy:  88.75% avg | [Test] _loss:  0.374058 avg, accuracy:  88.33% avg
-Epoch = 25
-[Train] _loss:  1.720810, accuracy:  88.75% avg | [Test] _loss:  0.333276 avg, accuracy:  91.67% avg
-Epoch = 26
-[Train] _loss:  1.712081, accuracy:  90.42% avg | [Test] _loss:  0.293336 avg, accuracy:  91.67% avg
-Epoch = 27
-[Train] _loss:  1.734871, accuracy:  90.83% avg | [Test] _loss:  0.219733 avg, accuracy:  93.33% avg
-Epoch = 28
-[Train] _loss:  1.791233, accuracy:  91.67% avg | [Test] _loss:  0.214253 avg, accuracy:  96.67% avg
-Epoch = 29
-[Train] _loss:  1.867307, accuracy:  92.50% avg | [Test] _loss:  0.188096 avg, accuracy:  96.67% avg
-Epoch = 30
-[Train] _loss:  1.948355, accuracy:  93.75% avg | [Test] _loss:  0.160551 avg, accuracy:  96.67% avg
-Epoch = 31
-[Train] _loss:  2.035618, accuracy:  94.58% avg | [Test] _loss:  0.177040 avg, accuracy:  96.67% avg
-Epoch = 32
-[Train] _loss:  2.693866, accuracy:  94.58% avg | [Test] _loss:  0.184271 avg, accuracy:  96.67% avg
-Epoch = 33
-[Train] _loss:  1.540466, accuracy:  94.58% avg | [Test] _loss:  0.175238 avg, accuracy:  96.67% avg
-Epoch = 34
-[Train] _loss:  2.297769, accuracy:  94.58% avg | [Test] _loss:  0.169933 avg, accuracy:  96.67% avg
-Epoch = 35
-[Train] _loss:  2.337718, accuracy:  94.17% avg | [Test] _loss:  0.136743 avg, accuracy:  96.67% avg
-Epoch = 36
-[Train] _loss:  2.350053, accuracy:  94.58% avg | [Test] _loss:  0.159082 avg, accuracy:  96.67% avg
-Epoch = 37
-[Train] _loss:  2.340817, accuracy:  94.58% avg | [Test] _loss:  0.202636 avg, accuracy:  95.00% avg
-Epoch = 38
-[Train] _loss:  2.280632, accuracy:  94.17% avg | [Test] _loss:  0.191693 avg, accuracy:  95.00% avg
-Epoch = 39
-[Train] _loss:  1.131709, accuracy:  93.75% avg | [Test] _loss:  0.128861 avg, accuracy:  98.33% avg
-Epoch = 40
-[Train] _loss:  0.680395, accuracy:  96.67% avg | [Test] _loss:  0.138205 avg, accuracy:  96.67% avg
-Epoch = 41
-[Train] _loss:  0.924980, accuracy:  95.42% avg | [Test] _loss:  0.109968 avg, accuracy:  98.33% avg
-Epoch = 42
-[Train] _loss:  0.525228, accuracy:  97.50% avg | [Test] _loss:  0.106712 avg, accuracy:  96.67% avg
-Epoch = 43
-[Train] _loss:  0.679223, accuracy:  97.08% avg | [Test] _loss:  0.082265 avg, accuracy:  98.33% avg
-Epoch = 44
-[Train] _loss:  0.678739, accuracy:  98.75% avg | [Test] _loss:  0.066340 avg, accuracy:  98.33% avg
-Epoch = 45
-[Train] _loss:  2.499421, accuracy:  96.25% avg | [Test] _loss:  0.128891 avg, accuracy:  96.67% avg
-Epoch = 46
-[Train] _loss:  1.586578, accuracy:  95.83% avg | [Test] _loss:  0.081027 avg, accuracy:  96.67% avg
-Epoch = 47
-[Train] _loss:  0.982025, accuracy:  95.42% avg | [Test] _loss:  0.059623 avg, accuracy:  98.33% avg
-Epoch = 48
-[Train] _loss:  1.416196, accuracy:  97.08% avg | [Test] _loss:  0.068073 avg, accuracy:  98.33% avg
-Epoch = 49
-[Train] _loss:  0.964430, accuracy:  97.08% avg | [Test] _loss:  0.079407 avg, accuracy: 100.00% avg
-After training [1.0, 20.0] -> [1 > 2, 1 == 2, 1 < 2]:           0.0000  0.0518  0.9482
-After training [5.0, 5.0] -> [1 > 2, 1 == 2, 1 < 2]:            0.0009  0.5774  0.4217
-After training [-1.0, -100.0] -> [1 > 2, 1 == 2, 1 < 2]:        0.9452  0.0536  0.0012
+[2024-02-25 15:09:53] [INFO] [metrics_init] Initializing metrics with log_interval: 1
+[2024-02-25 15:09:53] [INFO] [metrics_add] Added metric: 0
+[2024-02-25 15:09:53] [INFO] [metrics_add] Added metric: 1
+[2024-02-25 15:09:53] [INFO] [metrics_add] Added metric: 2
+[2024-02-25 15:09:53] [INFO] [metrics_add] Added metric: 3
+[2024-02-25 15:09:53] [INFO] [metrics_add] Added metric: 4
+[2024-02-25 15:09:53] [INFO] [flower_train] Training started
+[2024-02-25 15:09:53] [INFO] [flower_train] Epoch: 1/10
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 1/10, B: 8/8, Time since start: 00:00:00 | since start of epoch: 00:00:00
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 1/10, B: 8/8, Train loss: 0.638303 (current) | 0.811049 (epoch avg)
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 1/10, B: 8/8, Train accuracy: 78.6667% (current) | 75.3333% (epoch avg)
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 1/10, B: 8/8, Validation loss: 0.599726 (current) | 0.828731 (epoch avg)
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 1/10, B: 8/8, Validation accuracy: 84.6667% (current) | 75.9167% (epoch avg)
+[2024-02-25 15:09:53] [INFO] [flower_train] Epoch: 2/10
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 2/10, B: 8/8, Time since start: 00:00:00 | since start of epoch: 00:00:00
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 2/10, B: 8/8, Train loss: 0.451966 (current) | 0.454896 (epoch avg)
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 2/10, B: 8/8, Train accuracy: 89.3333% (current) | 91.0000% (epoch avg)
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 2/10, B: 8/8, Validation loss: 0.347247 (current) | 0.426023 (epoch avg)
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 2/10, B: 8/8, Validation accuracy: 92.6667% (current) | 92.1667% (epoch avg)
+[2024-02-25 15:09:53] [INFO] [flower_train] Epoch: 3/10
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 3/10, B: 8/8, Time since start: 00:00:00 | since start of epoch: 00:00:00
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 3/10, B: 8/8, Train loss: 0.387405 (current) | 0.336819 (epoch avg)
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 3/10, B: 8/8, Train accuracy: 89.3333% (current) | 91.8333% (epoch avg)
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 3/10, B: 8/8, Validation loss: 0.287836 (current) | 0.310859 (epoch avg)
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 3/10, B: 8/8, Validation accuracy: 92.6667% (current) | 92.6667% (epoch avg)
+[2024-02-25 15:09:53] [INFO] [flower_train] Epoch: 4/10
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 4/10, B: 8/8, Time since start: 00:00:00 | since start of epoch: 00:00:00
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 4/10, B: 8/8, Train loss: 0.268021 (current) | 0.269400 (epoch avg)
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 4/10, B: 8/8, Train accuracy: 96.0000% (current) | 94.1667% (epoch avg)
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 4/10, B: 8/8, Validation loss: 0.196923 (current) | 0.243808 (epoch avg)
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 4/10, B: 8/8, Validation accuracy: 98.6667% (current) | 95.1667% (epoch avg)
+[2024-02-25 15:09:53] [INFO] [flower_train] Epoch: 5/10
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 5/10, B: 8/8, Time since start: 00:00:00 | since start of epoch: 00:00:00
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 5/10, B: 8/8, Train loss: 0.165997 (current) | 0.164480 (epoch avg)
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 5/10, B: 8/8, Train accuracy: 97.3333% (current) | 98.3333% (epoch avg)
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 5/10, B: 8/8, Validation loss: 0.099338 (current) | 0.147046 (epoch avg)
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 5/10, B: 8/8, Validation accuracy: 100.0000% (current) | 99.7500% (epoch avg)
+[2024-02-25 15:09:53] [INFO] [flower_train] Epoch: 6/10
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 6/10, B: 8/8, Time since start: 00:00:00 | since start of epoch: 00:00:00
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 6/10, B: 8/8, Train loss: 0.087892 (current) | 0.085062 (epoch avg)
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 6/10, B: 8/8, Train accuracy: 100.0000% (current) | 99.5000% (epoch avg)
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 6/10, B: 8/8, Validation loss: 0.081233 (current) | 0.087904 (epoch avg)
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 6/10, B: 8/8, Validation accuracy: 100.0000% (current) | 99.5833% (epoch avg)
+[2024-02-25 15:09:53] [INFO] [flower_train] Epoch: 7/10
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 7/10, B: 8/8, Time since start: 00:00:00 | since start of epoch: 00:00:00
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 7/10, B: 8/8, Train loss: 0.046620 (current) | 0.051340 (epoch avg)
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 7/10, B: 8/8, Train accuracy: 100.0000% (current) | 100.0000% (epoch avg)
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 7/10, B: 8/8, Validation loss: 0.039401 (current) | 0.046568 (epoch avg)
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 7/10, B: 8/8, Validation accuracy: 100.0000% (current) | 100.0000% (epoch avg)
+[2024-02-25 15:09:53] [INFO] [flower_train] Epoch: 8/10
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 8/10, B: 8/8, Time since start: 00:00:00 | since start of epoch: 00:00:00
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 8/10, B: 8/8, Train loss: 0.036631 (current) | 0.034752 (epoch avg)
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 8/10, B: 8/8, Train accuracy: 100.0000% (current) | 100.0000% (epoch avg)
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 8/10, B: 8/8, Validation loss: 0.030337 (current) | 0.038632 (epoch avg)
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 8/10, B: 8/8, Validation accuracy: 100.0000% (current) | 100.0000% (epoch avg)
+[2024-02-25 15:09:53] [INFO] [flower_train] Epoch: 9/10
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 9/10, B: 8/8, Time since start: 00:00:00 | since start of epoch: 00:00:00
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 9/10, B: 8/8, Train loss: 0.030700 (current) | 0.027104 (epoch avg)
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 9/10, B: 8/8, Train accuracy: 100.0000% (current) | 100.0000% (epoch avg)
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 9/10, B: 8/8, Validation loss: 0.029901 (current) | 0.028329 (epoch avg)
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 9/10, B: 8/8, Validation accuracy: 100.0000% (current) | 100.0000% (epoch avg)
+[2024-02-25 15:09:53] [INFO] [flower_train] Epoch: 10/10
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 10/10, B: 8/8, Time since start: 00:00:00 | since start of epoch: 00:00:00
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 10/10, B: 8/8, Train loss: 0.024623 (current) | 0.021676 (epoch avg)
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 10/10, B: 8/8, Train accuracy: 100.0000% (current) | 100.0000% (epoch avg)
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 10/10, B: 8/8, Validation loss: 0.020332 (current) | 0.023964 (epoch avg)
+[2024-02-25 15:09:53] [INFO] [Metrics] E: 10/10, B: 8/8, Validation accuracy: 100.0000% (current) | 100.0000% (epoch avg)
+After training [1.0, 20.0] -> [1 > 2, 1 == 2, 1 < 2]:           0.0001  0.0135  0.9864
+After training [5.0, 5.0] -> [1 > 2, 1 == 2, 1 < 2]:            0.0330  0.8270  0.1400
+After training [-1.0, -100.0] -> [1 > 2, 1 == 2, 1 < 2]:        1.0000  0.0000  0.0000
 Min flower size: 1348 bytes
-[2024-02-24 15:21:09] [INFO] [weights_destroy] Destroying weights struct's (address: 0x7ffed36c8360) internal data
-[2024-02-24 15:21:09] [INFO] [weights_destroy] Destroying weights struct's (address: 0x7ffed36c83a0) internal data
-[2024-02-24 15:21:09] [INFO] [weights_destroy] Destroying weights struct's (address: 0x7ffed36c83e0) internal data
-[2024-02-24 15:21:09] [INFO] [weights_destroy] Destroying weights struct's (address: 0x7ffed36c8420) internal data
-[2024-02-24 15:21:09] [INFO] [weights_destroy] Destroying weights struct's (address: 0x7ffed36c8460) internal data
-[2024-02-24 15:21:09] [INFO] [weights_destroy] Destroying weights struct's (address: 0x7ffed36c84a0) internal data
-[2024-02-24 15:21:09] [INFO] [flower_destroy] Destroying flower struct with address: 0x55b2aca67f60
-[2024-02-24 15:21:09] [INFO] [loss_destroy] Destroying loss struct with address: 0x55b2aca67ff0
+[2024-02-25 15:09:53] [INFO] [weights_destroy] Destroying weights struct's (address: 0x7ffd97b165f0) internal data
+[2024-02-25 15:09:53] [INFO] [weights_destroy] Destroying weights struct's (address: 0x7ffd97b16630) internal data
+[2024-02-25 15:09:53] [INFO] [weights_destroy] Destroying weights struct's (address: 0x7ffd97b16670) internal data
+[2024-02-25 15:09:53] [INFO] [weights_destroy] Destroying weights struct's (address: 0x7ffd97b166b0) internal data
+[2024-02-25 15:09:53] [INFO] [weights_destroy] Destroying weights struct's (address: 0x7ffd97b166f0) internal data
+[2024-02-25 15:09:53] [INFO] [weights_destroy] Destroying weights struct's (address: 0x7ffd97b16730) internal data
+[2024-02-25 15:09:53] [INFO] [flower_destroy] Destroying flower struct with address: 0x55c3c7300d30
+[2024-02-25 15:09:53] [INFO] [loss_destroy] Destroying loss struct with address: 0x55c3c7300e40
+[2024-02-25 15:09:53] [INFO] [metrics_destroy] Destroying metrics struct with address: 0x55c3c7300dc0
 --------------------------------------------------------------------------------
 
 Fails: 0

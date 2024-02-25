@@ -28,7 +28,7 @@
  * @brief Maps each error to string
  *
  */
-const char *error_to_str[14] = {
+const char *error_to_str[15] = {
     "No error",                                                         // 0 (ERROR_NONE)
     "Memory allocation error",                                          // 1 (ERROR_MALLOC)
     "Wrong petal type",                                                 // 2 (ERROR_PETAL_WRONG_TYPE)
@@ -42,5 +42,6 @@ const char *error_to_str[14] = {
     "Index is out of bounds for bit array",                             // 10 (ERROR_BITMAP_ACCESS_OUT_OF_BOUNDS)
     "Wrong optimizer type",                                             // 11 (ERROR_OPTIMIZER_WRONG_TYPE)
     "No petals in flower",                                              // 12 (ERROR_FLOWER_NO_PETALS)
-    "Wrong loss type"                                                   // 13 (ERROR_LOSS_WRONG_TYPE)
+    "Wrong loss type",                                                  // 13 (ERROR_LOSS_WRONG_TYPE)
+    "Wrong number of batches / length of train dataset"                 // 14 (ERROR_WRONG_BATCH_SIZE)
 };
