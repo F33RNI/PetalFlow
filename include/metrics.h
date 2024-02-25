@@ -32,37 +32,29 @@
 #define METRICS_LOSS_VALIDATION     3U
 #define METRICS_ACCURACY_VALIDATION 4U
 
+#ifndef METRICS_PROGRESS_BAR_WIDTH
+#define METRICS_PROGRESS_BAR_WIDTH 20U
+#endif
+
 /**
  * @struct metrics_s
  * Stores metrics data
  *
  * @param *metrics array of enabled metrics
  * @param metrics_length size of metrics array
- * @param log_interval metrics logging interval in seconds (0 - no logging) during each epoch
  * @param _epoch_index_prev index of last epoch (for checking if epoch was changed)
- * @param _log_timer internal variable to store logging time
  * @param _time_now internal variable to store current batch time
  * @param _epoch_time_start internal variable to store each epoch start time
- * @param _training_time_start internal variable to store entire training start time
- * @param _loss_train_sum internal variable to store sum of training losses (to calculate average)
- * @param _loss_validation_sum internal variable to store sum of validation losses (to calculate average)
- * @param _accuracy_train_sum internal variable to store sum of training accuracies (to calculate average)
- * @param _accuracy_train_sum internal variable to store sum of validation accuracies (to calculate average)
- * @param _batches_passed internal variable to count batches (to calculate average)
  */
 typedef struct {
     uint8_t *metrics;
     uint8_t metrics_length;
-    uint32_t log_interval;
 
     int32_t _epoch_index_prev;
-    time_t _log_timer, _time_now, _epoch_time_start, _training_time_start;
-    float _loss_train_sum, _loss_validation_sum;
-    float _accuracy_train_sum, _accuracy_validation_sum;
-    uint32_t _batches_passed;
+    time_t _time_now, _epoch_time_start, _training_time_start;
 } metrics_s;
 
-metrics_s *metrics_init(uint32_t log_interval);
+metrics_s *metrics_init();
 
 void metrics_add(metrics_s *metrics, uint8_t metric);
 

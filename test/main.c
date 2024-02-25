@@ -697,7 +697,7 @@ uint8_t test_dense() {
 
     // Train
     uint32_t epochs = 10;
-    uint32_t batch_size = 50;
+    uint32_t batch_size = 40;
     flower_train(flower, LOSS_CATEGORICAL_CROSSENTROPY, &optimizer, metrics, train_dataset_inputs,
                  train_dataset_outputs, NULL, train_dataset_length, validation_dataset_inputs,
                  validation_dataset_outputs, NULL, validation_dataset_length, batch_size, epochs);
