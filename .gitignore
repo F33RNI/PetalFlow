@@ -1,5 +1,7 @@
 .vscode/
+docs/
 petalflow
 run.txt
 *.o
 *.a
+Numbers demo classifier structure.drawio
