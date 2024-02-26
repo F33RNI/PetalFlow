@@ -1,0 +1,30 @@
+name: Build and run tests
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+  merge_group:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v2
+    - name: Update list of packages
+      run: sudo apt-get update
+    - name: Install make and cmake
+      run: sudo apt-get install -y make cmake
+    - name: Create build directory
+      run: mkdir -p build
+    - name: Configure project
+      run: cmake -B build -DTESTS=ON -DLOGGER_LEVEL=1
+    - name: Build tests
+      run: cmake --build build --config Release
+    - name: Run tests
+      run: build/petalflow_tests
