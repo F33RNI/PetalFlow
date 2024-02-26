@@ -18,8 +18,9 @@
 
 - Add convolution layers
 - Python bindings
-- CMake
+- Add shared library build into `CMakeLists.txt`
 - Test on ARM and AVR
+- More tests and examples
 
 ----------
 
@@ -495,10 +496,22 @@ You can enable logging by defining `LOGGING` (for gcc: `-DLOGGING`). Other avail
 
 ## ✅ Tests and examples
 
-You can find more examples in `test/main.c` file. And you can build it using `gcc`:
+You can find more examples in `test/main.c` file
+
+You can build `petalflow_tests` target by using `cmake`:
+
+```shell
+cmake -B build -DTESTS=ON -DLOGGER_LEVEL=1
+cmake --build build --config Release
+
+build/petalflow_tests
+```
+
+Or by using `gcc`:
 
 ```shell
 gcc -o petalflow test/main.c src/*.c -Iinclude -DLOGGING -DLOGGER_LEVEL=1 -lm
+
 ./petalflow
 ```
 
