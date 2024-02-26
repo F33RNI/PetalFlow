@@ -1,5 +1,5 @@
 /**
- * @file bit_map.h
+ * @file bit_array.h
  * @author Fern Lane
  * @brief Defines and stores bit array data
  * @version 1.0.0
