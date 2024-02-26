@@ -1,11 +1,11 @@
 # 🌸 PetalFlow
 
-| <img src="logo.png" height="100" height="100" alt="PetalFlow logo"> | <h3>A pure C library for machine learning</h3> |
-| ------------------------------------------------------------------- | :--------------------------------------------: |
+| <img src="logo.png" height="128" height="128" alt="PetalFlow logo"> | <h3>A pure C light-weight library for machine learning</h3> |
+| ------------------------------------------------------------------- | :---------------------------------------------------------: |
 
 ----------
 
-## 🚧 Petal-Flow is under heavy development
+## 🚧 PetalFlow is under heavy development
 
 > Please use with caution and wait for the proper release
 >
@@ -451,6 +451,45 @@ Below is an example of an extremely simple classifier capable of just comparing 
     // Destroy metrics
     metrics_destroy(metrics);
     ```
+
+----------
+
+## 🧾 Logging
+
+PetalFlow has a simple logging implementation for formatting debug, info, warning and error messages
+
+> **logger()**
+>
+> ```c
+> void logger(uint8_t level,
+>             const char *tag,
+>             const char *message_or_format,
+>             ... )
+> ```
+>
+> Formats and prints logging entry.
+>
+> **Parameters**
+>
+> - `level`: logging level (`LOG_D`, `LOG_I`, `LOG_W`, `LOG_E`, or `LOG_NONE`)
+> - `tag`: logging tag (for example, name of function)
+> - `message_or_format`: message to log or format for other arguments
+> - `...`: other logger arguments, for example: `logger(LOG_I, "TAG", "Hello world %d, %.2f", 123, 4.5678f);` would result in `[YYYY-MM-DD HH:MM:SS] [INFO] [TAG] Hello world 123, 4.57`
+
+You can enable logging by defining `LOGGING` (for gcc: `-DLOGGING`). Other available definitions:
+
+- `LOGGER_LEVEL <value>` - Minimal allowed logging level. Default: `LOG_I`
+  - `LOG_D` - 0
+  - `LOG_I` - 1
+  - `LOG_W` - 2
+  - `LOG_E` - 3
+  - `LOG_NONE` - 255
+- `LOGGER_DISABLE_TIME` - Define to **disable** printing current time
+- `LOGGER_TIME_FORMAT <value>` - Time formatter. Default: `"[%Y-%m-%d %H:%M:%S]"`
+- `LOGGER_DISABLE_LEVEL` - Define to **disable** printing current entry level
+- `LOGGER_LEVEL_FIXED` - Define to **enable** fixed-width logging level printing
+- `LOGGER_LEVEL_FIXED_FORMAT <value>` - Fixed-width level formatter. Default: `"[%-7s]"`
+- `LOGGER_DISABLE_TAG` - Define to **disable** printing tag
 
 ----------
 
