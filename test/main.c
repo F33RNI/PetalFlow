@@ -425,7 +425,7 @@ uint8_t test_dropout() {
 
     // Calculated ratio
     float ones_ratio = (float) ones_counter / (float) bit_size;
-    printf("Bits set: %u (%.4f%)\n", ones_counter, ones_ratio * 100.f);
+    printf("Bits set: %u (%.4f%%)\n", ones_counter, ones_ratio * 100.f);
 
     // Clear
     bit_array_destroy(bit_array);
@@ -711,7 +711,7 @@ uint8_t test_dense() {
     print_array(flower_predict(flower, (float[]){-1.f, -100.f}), 1U, 3U, 1U);
 
     // Print flower weight
-    printf("Min flower size: %u bytes\n", flower_estimate_min_size(flower));
+    printf("Min flower size: %lu bytes\n", flower_estimate_min_size(flower));
 
     // Destroy internal array of weights
     weights_destroy(petal_hidden1->weights, false, true);
