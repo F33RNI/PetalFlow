@@ -61,7 +61,7 @@
  * @param moments pointer to 1D internal temp array of moments
  * @param velocities_or_cache pointer to 1D internal temp array of velocities or gradients cache (for
  * OPTIMIZER_ADA_GRAD)
- * @param learning_step index of weights update from start of training (for OPTIMIZER_ADAM)
+ * @param _learning_step index of weights update from start of training (for OPTIMIZER_ADAM)
  */
 typedef struct {
     bool trainable;
@@ -70,7 +70,7 @@ typedef struct {
     float *weights, *gradients;
     float center, deviation;
     float *moments, *velocities_or_cache;
-    uint64_t learning_step;
+    uint64_t _learning_step;
 } weights_s;
 
 uint8_t weights_check_init(weights_s *weights, uint32_t length_total);

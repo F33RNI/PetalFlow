@@ -255,15 +255,15 @@ uint8_t weights_update(weights_s *weights, optimizer_s *optimizer) {
                                               (1.f - optimizer->beta_2) * weights->gradients[i] * weights->gradients[i];
 
             // Weights correction
-            moment_hat = weights->moments[i] / (1.f - powf(optimizer->beta_1, (float) weights->learning_step + 1.f));
+            moment_hat = weights->moments[i] / (1.f - powf(optimizer->beta_1, (float) weights->_learning_step + 1.f));
             velocity_hat =
-                weights->velocities_or_cache[i] / (1.f - powf(optimizer->beta_2, (float) weights->learning_step + 1.f));
+                weights->velocities_or_cache[i] / (1.f - powf(optimizer->beta_2, (float) weights->_learning_step + 1.f));
 
             // Update weights
             weights->weights[i] -= optimizer->learning_rate * moment_hat / (sqrtf(velocity_hat) + EPSILON);
 
             // Increment step
-            weights->learning_step++;
+            weights->_learning_step++;
         }
     }
 
