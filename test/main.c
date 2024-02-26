@@ -646,17 +646,17 @@ uint8_t test_dense() {
     // Initialize petals
     petal_s *petal_hidden1 =
         petal_init(PETAL_TYPE_DENSE_1D, false, &(petal_shape_s){1U, 2U, 1U, 0UL}, &(petal_shape_s){1U, 2U, 1U, 0UL},
-                   &(weights_s){true, WEIGHTS_INIT_XAVIER_GLOROT_GAUSSIAN, 4U, NULL, NULL, 0.f, 1.f, NULL, NULL, 0U},
+                   &(weights_s){true, WEIGHTS_INIT_RANDOM_GAUSSIAN, 4U, NULL, NULL, 0.f, 1.f, NULL, NULL, 0U},
                    &(weights_s){true, WEIGHTS_INIT_CONSTANT, 2U, NULL, NULL, 0.f, 1.f, NULL, NULL, 0U},
                    &(activation_s){ACTIVATION_RELU, 1.f, 0.f, 0.0f, 0.00f, 1.f}, 0.0f, 0.f, 1.f);
     petal_s *petal_hidden2 =
         petal_init(PETAL_TYPE_DENSE_1D, false, &(petal_shape_s){1U, 2U, 1U, 0UL}, &(petal_shape_s){1U, 2U, 1U, 0UL},
-                   &(weights_s){true, WEIGHTS_INIT_XAVIER_GLOROT_GAUSSIAN, 4U, NULL, NULL, 0.f, 1.f, NULL, NULL, 0U},
+                   &(weights_s){true, WEIGHTS_INIT_RANDOM_GAUSSIAN, 4U, NULL, NULL, 0.f, 1.f, NULL, NULL, 0U},
                    &(weights_s){true, WEIGHTS_INIT_CONSTANT, 2U, NULL, NULL, 0.f, 1.f, NULL, NULL, 0U},
                    &(activation_s){ACTIVATION_RELU, 1.f, 0.f, 0.0f, 0.00f, 1.f}, 0.0f, 0.f, 1.f);
     petal_s *petal_output =
         petal_init(PETAL_TYPE_DENSE_1D, false, &(petal_shape_s){1U, 2U, 1U, 0UL}, &(petal_shape_s){1U, 3U, 1U, 0UL},
-                   &(weights_s){true, WEIGHTS_INIT_XAVIER_GLOROT_GAUSSIAN, 6U, NULL, NULL, 0.f, 1.f, NULL, NULL, 0U},
+                   &(weights_s){true, WEIGHTS_INIT_RANDOM_GAUSSIAN, 6U, NULL, NULL, 0.f, 1.f, NULL, NULL, 0U},
                    &(weights_s){true, WEIGHTS_INIT_CONSTANT, 3U, NULL, NULL, 0.f, 1.f, NULL, NULL, 0U},
                    &(activation_s){ACTIVATION_SOFTMAX, 1.f, 0.f, 0.0f, 0.01f, 1.f}, 0.0f, 0.f, 1.f);
 
