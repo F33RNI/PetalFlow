@@ -448,6 +448,34 @@ Below is an example of an extremely simple classifier capable of just comparing 
     ```
 
 11. Free memory
+    >
+    > ```c
+    > void weights_destroy(weights_s *weights,
+    >                      bool destroy_struct,
+    >                      bool destroy_internal_array)
+    > ```
+    >
+    > Frees memory allocated by weights struct.
+    >
+    > **Parameters**
+    > - `weights`: pointer to `weights_s` struct or NULL
+    > - `destroy_struct`: true to destroy struct itself (set to false if struct was defined manually)
+    > - `destroy_internal_array`: true to also destroy `weights->weights` array
+
+    > ```c
+    > void flower_destroy(flower_s *flower,
+    >                      bool destroy_petals,
+    >                      bool destroy_weights_array,
+    >                      bool destroy_bias_weights_array)
+    > ```
+    >
+    > Frees memory allocated by flower struct.
+    >
+    > **Parameters**
+    > - `flower`: pointer to `flower_s` struct
+    > - `destroy_petals`: true to also destroy each petal
+    > - `destroy_weights_array`: true to also destroy `weights->weights` array for each petal, false to not
+    > - `destroy_bias_weights_array`: true to also destroy `bias_weights->weights` array for each petal, false to not
 
     ```c
     // Destroy internal array of weights
