@@ -18,9 +18,21 @@
 
 - Add convolution layers
 - Python bindings
-- Add shared library build into `CMakeLists.txt`
 - Test on ARM and AVR
 - More tests and examples
+
+----------
+
+## 📚 Building shared library
+
+It's possible to build shared library using `cmake`
+
+```shell
+cmake -B build -DTESTS=OFF -DLOGGER_LEVEL=1
+cmake --build build --config Release
+```
+
+Shared library will be located inside `build` directory
 
 ----------
 
