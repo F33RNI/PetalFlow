@@ -1,7 +1,7 @@
 /**
  * @file flower.c
  * @author Fern Lane
- * @brief
+ * @brief Main file that combines everything and allows higher-level access to train and predict functions
  * @version 1.0.0
  * @date 2023-11-17
  *
@@ -68,8 +68,23 @@ flower_s *flower_init(petal_s **petals, uint32_t petals_length) {
     return flower;
 }
 
+/**
+ * @brief Alias for flower_forward(flower, input, false)
+ *
+ * @param flower pointer to initialized flower_s struct
+ * @param input pointer to array of input data (must be the same size as 1st petal's input)
+ * @return float* pointer to the last petal's output layer
+ */
 float *flower_predict(flower_s *flower, float *input) { return flower_forward(flower, input, false); }
 
+/**
+ * @brief Forward propagation through each petal
+ *
+ * @param flower pointer to initialized flower_s struct
+ * @param input pointer to array of input data (must be the same size as 1st petal's input)
+ * @param training true to enable training mode (to apply dropout)
+ * @return float* pointer to the last petal's output layer
+ */
 float *flower_forward(flower_s *flower, float *input, bool training) {
     for (uint32_t i = 0; i < flower->petals_length; ++i) {
         // Forward propagation thought each petal
@@ -91,15 +106,37 @@ float *flower_forward(flower_s *flower, float *input, bool training) {
     return flower->petals[flower->petals_length - 1]->output;
 }
 
-float flower_train(flower_s *flower, uint8_t loss_type, optimizer_s *optimizer, metrics_s *metrics,
-                   float **inputs_train, float **outputs_true_train, labels_s **outputs_true_train_sparse,
-                   uint32_t train_length, float **inputs_validation, float **outputs_true_validation,
-                   labels_s **outputs_true_validation_sparse, uint32_t validation_length, uint32_t batch_size,
-                   uint32_t epochs) {
+/**
+ * @brief Early implementation of backpropagation learning
+ *
+ * @param flower pointer to initialized flower_s struct
+ * @param loss_type loss function (LOSS_...)
+ * @param optimizer pointer to initialized optimizer_s struct
+ * type - optimizer type (OPTIMIZER_...)
+ * learning_rate - learning rate (required for all optimizer types) Default: 0.01
+ * momentum - accelerates gradient descent and dampens oscillations (for OPTIMIZER_SGD_MOMENTUM)
+ * beta_1 - hyperparameter (for OPTIMIZER_RMS_PROP and OPTIMIZER_ADAM) Default: 0.9
+ * beta_2 - hyperparameter (for OPTIMIZER_ADAM) Default: 0.999
+ * @param metrics pointer to initialized metrics_s struct
+ * @param inputs_train pointer to array of arrays of training input data (train dataset)
+ * @param outputs_true_train pointer to array of arrays of training output data (train dataset)
+ * @param outputs_true_train_sparse pointer to array of label_s arrays of sparse training output data (1 = [0, 1, ...])
+ * @param train_length number of training samples (size of training dataset)
+ * @param inputs_validation pointer to array of arrays of validation input data (validation dataset)
+ * @param outputs_true_validation pointer to array of arrays of validation output data (train dataset)
+ * @param outputs_true_validation_sparse pointer to array of label_s arrays of sparse validation output data
+ * @param validation_length number of validation samples (size of validation dataset)
+ * @param batch_size samples per batch
+ * @param epochs total number of training epochs
+ */
+void flower_train(flower_s *flower, uint8_t loss_type, optimizer_s *optimizer, metrics_s *metrics, float **inputs_train,
+                  float **outputs_true_train, labels_s **outputs_true_train_sparse, uint32_t train_length,
+                  float **inputs_validation, float **outputs_true_validation, labels_s **outputs_true_validation_sparse,
+                  uint32_t validation_length, uint32_t batch_size, uint32_t epochs) {
     // Check train length
     if (train_length == 0) {
         logger(LOG_E, "flower_train", "No training data");
-        return -1.f;
+        return;
     }
 
     // Initialize _loss
@@ -108,14 +145,14 @@ float flower_train(flower_s *flower, uint8_t loss_type, optimizer_s *optimizer, 
         if (loss_type > LOSS_MAX) {
             logger(LOG_E, "flower_train", "Wrong _loss type: %u", loss_type);
             flower->error_code = ERROR_LOSS_WRONG_TYPE;
-            return -1.f;
+            return;
         }
 
         flower->_loss = (loss_s *) calloc(1U, sizeof(loss_s));
         if (!flower->_loss) {
             logger(LOG_E, "flower_train", "Error allocating memory for loss_s struct");
             flower->error_code = ERROR_MALLOC;
-            return -1.f;
+            return;
         }
         flower->_loss->type = loss_type;
     }
@@ -127,7 +164,7 @@ float flower_train(flower_s *flower, uint8_t loss_type, optimizer_s *optimizer, 
         if (!output_temp) {
             logger(LOG_E, "flower_train", "Error allocating memory for output_temp array");
             flower->error_code = ERROR_MALLOC;
-            return -1.f;
+            return;
         }
     }
 
@@ -141,7 +178,7 @@ float flower_train(flower_s *flower, uint8_t loss_type, optimizer_s *optimizer, 
         logger(LOG_E, "flower_train", "Batch size (%u) must be less then dataset length (%u) that should be not 0",
                batch_size, train_length);
         flower->error_code = ERROR_WRONG_BATCH_SIZE;
-        return -1.f;
+        return;
     }
 
     // Log
@@ -184,7 +221,7 @@ float flower_train(flower_s *flower, uint8_t loss_type, optimizer_s *optimizer, 
 
                 // Check for error
                 if (!predicted)
-                    return -1.f;
+                    return;
 
                 // Use temp output array in case of sparse labels
                 if (outputs_true_train_sparse) {
@@ -206,7 +243,7 @@ float flower_train(flower_s *flower, uint8_t loss_type, optimizer_s *optimizer, 
                 if (error_temp != ERROR_NONE) {
                     logger(LOG_E, "flower_train", "Error calculating _loss: %s", error_to_str[error_temp]);
                     flower->error_code = error_temp;
-                    return -1.f;
+                    return;
                 }
 
                 // Add to sum to calculate mean
@@ -243,7 +280,7 @@ float flower_train(flower_s *flower, uint8_t loss_type, optimizer_s *optimizer, 
                         logger(LOG_E, "flower_train", "Error during backpropagation: %s",
                                error_to_str[flower->petals[petal_i]->error_code]);
                         flower->error_code = flower->petals[petal_i]->error_code;
-                        return -1.f;
+                        return;
                     }
                 }
             }
@@ -262,7 +299,7 @@ float flower_train(flower_s *flower, uint8_t loss_type, optimizer_s *optimizer, 
                 if (error_temp != ERROR_NONE) {
                     logger(LOG_E, "flower_train", "Error updating weights: %s", error_to_str[error_temp]);
                     flower->error_code = error_temp;
-                    return -1.f;
+                    return;
                 }
             }
 
@@ -276,7 +313,7 @@ float flower_train(flower_s *flower, uint8_t loss_type, optimizer_s *optimizer, 
 
                     // Check for error
                     if (!predicted)
-                        return -1.f;
+                        return;
 
                     // Use temp output array in case of sparse labels
                     if (outputs_true_validation_sparse) {
@@ -300,7 +337,7 @@ float flower_train(flower_s *flower, uint8_t loss_type, optimizer_s *optimizer, 
                         logger(LOG_E, "flower_train", "Error calculating _loss during validation: %s",
                                error_to_str[error_temp]);
                         flower->error_code = error_temp;
-                        return -1.f;
+                        return;
                     }
 
                     // Add to sum to calculate mean

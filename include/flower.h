@@ -1,7 +1,7 @@
 /**
  * @file flower.h
  * @author Fern Lane
- * @brief
+ * @brief Flower struct and high-level functions definitions
  * @version 1.0.0
  * @date 2023-11-17
  *
@@ -55,11 +55,10 @@ float *flower_predict(flower_s *flower, float *input);
 
 float *flower_forward(flower_s *flower, float *input, bool training);
 
-float flower_train(flower_s *flower, uint8_t loss_type, optimizer_s *optimizer, metrics_s *metrics,
-                   float **inputs_train, float **outputs_true_train, labels_s **outputs_true_train_sparse,
-                   uint32_t train_length, float **inputs_validation, float **outputs_true_validation,
-                   labels_s **outputs_true_validation_sparse, uint32_t validation_length, uint32_t batch_size,
-                   uint32_t epochs);
+void flower_train(flower_s *flower, uint8_t loss_type, optimizer_s *optimizer, metrics_s *metrics, float **inputs_train,
+                  float **outputs_true_train, labels_s **outputs_true_train_sparse, uint32_t train_length,
+                  float **inputs_validation, float **outputs_true_validation, labels_s **outputs_true_validation_sparse,
+                  uint32_t validation_length, uint32_t batch_size, uint32_t epochs);
 
 size_t flower_estimate_min_size(flower_s *flower);
 
