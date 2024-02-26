@@ -47,6 +47,35 @@ uint32_t petal_output_to_label(float *petal_output, uint32_t petal_output_length
 }
 
 /**
+ * @brief Converts single label index (aka argmax) into array of labels (see metrics_calculate_accuracy())
+ *
+ * @return labels_s* pointer to struct containing labels indices and number of them
+ */
+labels_s *label_to_labels(uint32_t label_index) {
+    // Allocate labels_s struct
+    labels_s *labels = (labels_s *) calloc(1U, sizeof(labels_s));
+    if (!labels) {
+        logger(LOG_E, "label_to_labels", "Error allocating memory for labels_s struct");
+        return NULL;
+    }
+
+    // Only 1 label
+    labels->labels_length = 1;
+
+    // Allocate array
+    labels->labels = (uint32_t *) realloc(labels->labels, labels->labels_length * sizeof(uint32_t));
+    if (!labels->labels) {
+        logger(LOG_E, "petal_output_to_labels", "Error reallocating memory for labels->labels array");
+        return NULL;
+    }
+
+    // Set label index
+    labels->labels[0] = label_index;
+
+    return labels;
+}
+
+/**
  * @brief Converts label index (single one) into array. ex.: 2 = [0, 0, 1, 0, ..., 0]
  *
  * @param label_index label index (0 to petal_output_length - 1)

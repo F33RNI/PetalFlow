@@ -39,6 +39,8 @@ typedef struct {
 
 uint32_t petal_output_to_label(float *petal_output, uint32_t petal_output_length);
 
+labels_s *label_to_labels(uint32_t label_index);
+
 void label_to_petal_output(uint32_t label_index, float *petal_output, uint32_t petal_output_length, float low,
                            float upper);
 

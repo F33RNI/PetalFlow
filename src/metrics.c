@@ -276,15 +276,13 @@ float metrics_calculate_accuracy(metrics_s *metrics, float *predicted, float *ex
     bool multiple = expected_labels->labels_length > 1;
 
     // Convert to predicted labels
-    labels_s *predicted_labels;
+    labels_s *predicted_labels = NULL;
     if (multiple)
         predicted_labels = petal_output_to_labels(predicted, length, threshold);
 
     // Use as single label
-    else {
-        uint32_t predicted_labels_labels[] = {petal_output_to_label(predicted, length)};
-        predicted_labels = &(labels_s){predicted_labels_labels, 1U};
-    }
+    else
+        predicted_labels = label_to_labels(petal_output_to_label(predicted, length));
 
     // Check labels
     if (!predicted_labels) {
@@ -318,8 +316,7 @@ float metrics_calculate_accuracy(metrics_s *metrics, float *predicted, float *ex
     }
 
     // Clean up allocated memory
-    if (multiple)
-        labels_destroy(predicted_labels);
+    labels_destroy(predicted_labels);
     labels_destroy(expected_labels);
 
     // Calculate and return accuracy
