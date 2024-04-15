@@ -46,8 +46,9 @@ bit_array_s *bit_array_init(uint32_t size_bits) {
     // Reset error
     bit_array->error_code = ERROR_NONE;
 
-    // Calculate the number of uint32_t needed to represent size_bits and initialize array with zeros
-    bit_array->data = (uint32_t *) calloc((size_bits + (uint32_t) 31) / (uint32_t) 32, sizeof(uint32_t));
+    // Calculate the number of BIT_ARRAY_TYPE needed to represent size_bits and initialize array with zeros
+    bit_array->data =
+        (BIT_ARRAY_TYPE *) calloc((size_bits + (BIT_ARRAY_BITS - 1U)) / BIT_ARRAY_BITS, sizeof(BIT_ARRAY_TYPE));
     if (!bit_array->data) {
         logger(LOG_E, "bit_array_init", "Error allocating memory for bit_array->data");
         bit_array->error_code = ERROR_MALLOC;
@@ -74,7 +75,7 @@ void bit_array_set_bit(bit_array_s *bit_array, uint32_t index) {
     }
 
     // Set bit
-    bit_array->data[index / (uint32_t) 32] |= (uint32_t) 1 << index % (uint32_t) 32;
+    bit_array->data[index / BIT_ARRAY_BITS] |= (BIT_ARRAY_TYPE) 1 << index % (BIT_ARRAY_TYPE) BIT_ARRAY_BITS;
 }
 
 /**
@@ -93,7 +94,7 @@ void bit_array_clear_bit(bit_array_s *bit_array, uint32_t index) {
     }
 
     // Clear bit
-    bit_array->data[index / (uint32_t) 32] &= ~((uint32_t) 1 << index % (uint32_t) 32);
+    bit_array->data[index / BIT_ARRAY_BITS] &= ~((BIT_ARRAY_TYPE) 1 << index % (BIT_ARRAY_TYPE) BIT_ARRAY_BITS);
 }
 
 /**
@@ -114,7 +115,8 @@ bool bit_array_get_bit(bit_array_s *bit_array, uint32_t index) {
     }
 
     // Return bit state
-    return ((bit_array->data[index / (uint32_t) 32] >> index % (uint32_t) 32) & (uint32_t) 1) != (uint32_t) 0;
+    return ((bit_array->data[index / BIT_ARRAY_BITS] >> index % (BIT_ARRAY_TYPE) BIT_ARRAY_BITS) &
+            (BIT_ARRAY_TYPE) 1) != (BIT_ARRAY_TYPE) 0;
 }
 
 /**
@@ -122,7 +124,7 @@ bool bit_array_get_bit(bit_array_s *bit_array, uint32_t index) {
  *
  * @param bit_array pointer to bit_array_s struct
  */
-void bit_array_clear(bit_array_s *bit_array) { memset(bit_array->data, 0, bit_array->length * sizeof(uint32_t)); }
+void bit_array_clear(bit_array_s *bit_array) { memset(bit_array->data, 0, bit_array->length * sizeof(BIT_ARRAY_TYPE)); }
 
 /**
  * @brief Frees memory allocated by bit_array struct

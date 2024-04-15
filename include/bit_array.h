@@ -26,16 +26,19 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#define BIT_ARRAY_TYPE uint8_t
+#define BIT_ARRAY_BITS 8U
+
 /**
  * @struct bit_array_s
  * Stores "array of bits"
  *
- * @param data pointer to array of uint32_t numbers
- * @param length length of array in words (in uint32_t)
+ * @param data pointer to array of BIT_ARRAY_TYPE numbers
+ * @param length length of array in BIT_ARRAY_TYPE
  * @param error_code initialization or runtime error code
  */
 typedef struct {
-    uint32_t *data;
+    BIT_ARRAY_TYPE *data;
     uint32_t length;
     uint8_t error_code;
 } bit_array_s;

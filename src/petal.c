@@ -240,7 +240,7 @@ size_t petal_estimate_min_size(petal_s *petal) {
         if (petal->bit_array) {
             min_size += sizeof(bit_array_s);
             if (petal->bit_array->data)
-                min_size += petal->output_shape->length * sizeof(uint32_t);
+                min_size += petal->output_shape->length * sizeof(BIT_ARRAY_TYPE);
         }
 
         // output
