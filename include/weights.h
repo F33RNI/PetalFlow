@@ -2,8 +2,6 @@
  * @file weights.h
  * @author Fern Lane
  * @brief Stores weight's data and definitions
- * @version 1.0.0
- * @date 2023-11-17
  *
  * @copyright Copyright (c) 2023-2024 Fern Lane
  *

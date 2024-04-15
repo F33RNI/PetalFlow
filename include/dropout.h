@@ -2,8 +2,6 @@
  * @file dropout.h
  * @author Fern Lane
  * @brief Handles petal's dropout as bit map
- * @version 1.0.0
- * @date 2023-11-17
  *
  * @copyright Copyright (c) 2023-2024 Fern Lane
  *

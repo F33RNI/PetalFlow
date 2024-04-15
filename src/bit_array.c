@@ -2,8 +2,6 @@
  * @file bit_array.c
  * @author Fern Lane
  * @brief Provides array of bits based on array of words
- * @version 1.0.0
- * @date 2023-11-17
  *
  * @copyright Copyright (c) 2023-2024 Fern Lane
  *

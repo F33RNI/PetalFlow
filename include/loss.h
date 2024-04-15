@@ -2,8 +2,6 @@
  * @file loss.h
  * @author Fern Lane
  * @brief Stores loss functions data and types definitions
- * @version 1.0.0
- * @date 2023-11-17
  *
  * @copyright Copyright (c) 2023-2024 Fern Lane
  *

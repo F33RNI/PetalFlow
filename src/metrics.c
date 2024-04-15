@@ -2,8 +2,6 @@
  * @file metrics.c
  * @author Fern Lane
  * @brief Computes some metrics that allows you to track training progress
- * @version 1.0.0
- * @date 2024-01-26
  *
  * @copyright Copyright (c) 2023-2024 Fern Lane
  *

@@ -2,8 +2,6 @@
  * @file bit_array.h
  * @author Fern Lane
  * @brief Defines and stores bit array data
- * @version 1.0.0
- * @date 2023-11-17
  *
  * @copyright Copyright (c) 2023-2024 Fern Lane
  *

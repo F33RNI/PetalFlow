@@ -2,8 +2,6 @@
  * @file flower.h
  * @author Fern Lane
  * @brief Flower struct and high-level functions definitions
- * @version 1.0.0
- * @date 2023-11-17
  *
  * @copyright Copyright (c) 2023-2024 Fern Lane
  *

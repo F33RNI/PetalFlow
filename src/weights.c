@@ -2,8 +2,6 @@
  * @file weights.c
  * @author Fern Lane
  * @brief Weights initialization, correction (weights update) and size estimation
- * @version 1.0.0
- * @date 2023-11-17
  *
  * @copyright Copyright (c) 2023-2024 Fern Lane
  *

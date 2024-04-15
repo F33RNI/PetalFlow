@@ -2,8 +2,6 @@
  * @file logger.с
  * @author Fern Lane
  * @brief Logging implementation
- * @version 1.0.0
- * @date 2024-02-23
  *
  * @copyright Copyright (c) 2023-2024 Fern Lane
  *

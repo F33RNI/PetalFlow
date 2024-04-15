@@ -2,8 +2,6 @@
  * @file metrics.h
  * @author Fern Lane
  * @brief Stores metrics functions data and types definitions
- * @version 1.0.0
- * @date 2024-01-26
  *
  * @copyright Copyright (c) 2023-2024 Fern Lane
  *
