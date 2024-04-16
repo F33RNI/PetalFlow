@@ -35,6 +35,7 @@
 #include "metrics.h"
 #include "optimizers.h"
 #include "petal.h"
+#include "random.h"
 
 // h for approximating derivative
 #define PERTURB_H 0.001f
@@ -432,10 +433,10 @@ uint8_t test_dropout() {
 
     // Check
     if (fabsf(target_ratio - ones_ratio) < 0.001f) {
-        printf("Passed\n\n");
+        printf("Passed\n");
         return 0;
     }
-    printf("Failed\n\n");
+    printf("Failed\n");
     return 1;
 }
 
@@ -537,17 +538,16 @@ uint8_t test_normalization() {
     } else
         printf("Passed\n");
     petal_destroy(petal, true, true, true);
-    printf("\n");
 
     return fails;
 }
 
 /**
- * @brief Generates 2D array of random integers from -10 to 10 as floats
+ * @brief Generates 2D array of random floats from -10.0 to 10.0
  *
  * @param rows number of rows (outer array length)
  * @param cols number of elements in each internal array
- * @return float** 2D array of random integers as floats
+ * @return float** 2D array of random floats
  */
 float **dense_generate_input_data(uint32_t rows, uint32_t cols) {
     // Allocate memory for the outer array (rows)
@@ -565,9 +565,9 @@ float **dense_generate_input_data(uint32_t rows, uint32_t cols) {
             return NULL;
         }
 
-        // Populate the internal array with random float values
+        // Populate the internal array with random float values in (-10, 10] interval
         for (uint32_t col = 0; col < cols; ++col) {
-            array[row][col] = (float) (int16_t) (((float) rand() / RAND_MAX) * 10 - 5);
+            array[row][col] = rk_float_() * 20.f - 10.f;
         }
     }
     return array;
@@ -577,9 +577,9 @@ float **dense_generate_input_data(uint32_t rows, uint32_t cols) {
  * @brief Generates 2D array of expected outputs by comparing 1st and 2nd
  * elements of input_data array
  *
- * @param input_data 2D array of random integers as floats
+ * @param input_data 2D array of random floats
  * @param rows number of rows (outer array length)
- * @return float** true outputs (cols = 3)
+ * @return float** true outputs (cols = 2)
  */
 float **dense_generate_output_data(float **input_data, uint32_t rows) {
     // Allocate memory for the outer array (rows)
@@ -591,7 +591,7 @@ float **dense_generate_output_data(float **input_data, uint32_t rows) {
 
     for (uint32_t row = 0; row < rows; ++row) {
         // Allocate memory for each internal array (columns)
-        array[row] = (float *) calloc(3U, sizeof(float));
+        array[row] = (float *) calloc(2U, sizeof(float));
         if (!array[row]) {
             printf("Error allocating array[row] for "
                    "dense_generate_output_data!\n");
@@ -602,13 +602,9 @@ float **dense_generate_output_data(float **input_data, uint32_t rows) {
         if (input_data[row][0] > input_data[row][1])
             array[row][0] = 1.f;
 
-        // 1 = 2
-        else if (input_data[row][0] == input_data[row][1])
-            array[row][1] = 1.f;
-
-        // 1 < 2
+        // 1 <= 2
         else
-            array[row][2] = 1.f;
+            array[row][1] = 1.f;
     }
     return array;
 }
@@ -616,15 +612,18 @@ float **dense_generate_output_data(float **input_data, uint32_t rows) {
 /**
  * @brief Performs test of dense layers by training simple classifier
  *
- * @return uint8_t 0 if passed, 1 is failed
+ * @return uint8_t number of fails
  */
 uint8_t test_dense() {
     // Print about message
     printf("\nTesting simple classifier using 3 dense layers\n");
 
-    // 500 numbers from -5 to 5: 80% train, 20% validation
-    uint32_t train_dataset_length = 400;
-    uint32_t validation_dataset_length = 100;
+    // Fails counter
+    uint8_t fails = 0U;
+
+    // 1000 numbers from -10 to 10: 80% train, 20% validation
+    uint32_t train_dataset_length = 800;
+    uint32_t validation_dataset_length = 200;
 
     // Generate validation datasets
     float **train_dataset_inputs = dense_generate_input_data(train_dataset_length, 2U);
@@ -655,9 +654,9 @@ uint8_t test_dense() {
                    &(weights_s){true, WEIGHTS_INIT_CONSTANT, 2U, NULL, NULL, 0.f, 1.f, NULL, NULL, 0U},
                    &(activation_s){ACTIVATION_RELU, 1.f, 0.f, 0.0f, 0.00f, 1.f, NULL}, 0.0f, 0.f, 1.f);
     petal_s *petal_output =
-        petal_init(PETAL_TYPE_DENSE_1D, false, &(petal_shape_s){1U, 2U, 1U, 0UL}, &(petal_shape_s){1U, 3U, 1U, 0UL},
+        petal_init(PETAL_TYPE_DENSE_1D, false, &(petal_shape_s){1U, 2U, 1U, 0UL}, &(petal_shape_s){1U, 2U, 1U, 0UL},
                    &(weights_s){true, WEIGHTS_INIT_XAVIER_GLOROT_GAUSSIAN, 6U, NULL, NULL, 0.f, 1.f, NULL, NULL, 0U},
-                   &(weights_s){true, WEIGHTS_INIT_CONSTANT, 3U, NULL, NULL, 0.f, 1.f, NULL, NULL, 0U},
+                   &(weights_s){true, WEIGHTS_INIT_CONSTANT, 2U, NULL, NULL, 0.f, 1.f, NULL, NULL, 0U},
                    &(activation_s){ACTIVATION_SOFTMAX, 1.f, 0.f, 0.0f, 0.01f, 1.f, NULL}, 0.0f, 0.f, 1.f);
 
     // Print weights
@@ -672,20 +671,20 @@ uint8_t test_dense() {
     print_array(petal_hidden2->bias_weights->weights, 1U, 2U, 1U);
 
     printf("hidden 2 -> out weights:\n");
-    print_array(petal_output->weights->weights, 2U, 3U, 1U);
+    print_array(petal_output->weights->weights, 2U, 2U, 1U);
     printf("hidden 2 -> out bias weights:\n");
-    print_array(petal_output->bias_weights->weights, 1U, 3U, 1U);
+    print_array(petal_output->bias_weights->weights, 1U, 2U, 1U);
 
     // Initialize flower
     petal_s *petals[] = {petal_hidden1, petal_hidden2, petal_output};
     flower_s *flower = flower_init(petals, 3U);
 
     // Show prediction before training
-    printf("Before training [1.0, 2.0] -> [1 > 2, 1 == 2, 1 < 2]:\t\t");
-    print_array(flower_predict(flower, (float[]){1.f, 2.f}), 1U, 3U, 1U);
+    printf("Before training [1.0, 2.0] -> [1 > 2, 1 <= 2]:\t\t");
+    print_array(flower_predict(flower, (float[]){1.f, 2.f}), 1U, 2U, 1U);
 
     // Initialize optimizer (Type, learning rate, momentum, beta 1, beta 2)
-    optimizer_s optimizer = (optimizer_s){OPTIMIZER_ADAM, .1f, 0.f, .89f, .99f};
+    optimizer_s optimizer = (optimizer_s){OPTIMIZER_ADAM, .01f, 0.f, .89f, .99f};
 
     // Initialize metrics
     metrics_s *metrics = metrics_init(1);
@@ -702,13 +701,31 @@ uint8_t test_dense() {
                  train_dataset_outputs, NULL, train_dataset_length, validation_dataset_inputs,
                  validation_dataset_outputs, NULL, validation_dataset_length, batch_size, epochs);
 
-    // Test training result on new data
-    printf("After training [1.0, 20.0] -> [1 > 2, 1 == 2, 1 < 2]:\t\t");
-    print_array(flower_predict(flower, (float[]){1.f, 20.f}), 1U, 3U, 1U);
-    printf("After training [5.0, 5.0] -> [1 > 2, 1 == 2, 1 < 2]:\t\t");
-    print_array(flower_predict(flower, (float[]){5.f, 5.f}), 1U, 3U, 1U);
-    printf("After training [-1.0, -100.0] -> [1 > 2, 1 == 2, 1 < 2]:\t");
-    print_array(flower_predict(flower, (float[]){-1.f, -100.f}), 1U, 3U, 1U);
+    // Test training result on a new data
+    float *result;
+    printf("After training [1.0, 10.0] -> [1 > 2, 1 <= 2]:\t\t");
+    result = flower_predict(flower, (float[]){1.f, 10.f});
+    print_array(result, 1U, 2U, 1U);
+    if (result[0] >= result[1]) {
+        printf("\t\t\t\t\t\t\t\tWRONG!\n");
+        fails++;
+    }
+
+    printf("After training [20.0, 10.0] -> [1 > 2, 1 <= 2]:\t\t");
+    result = flower_predict(flower, (float[]){20.f, 10.f});
+    print_array(result, 1U, 2U, 1U);
+    if (result[0] <= result[1]) {
+        printf("\t\t\t\t\t\t\t\tWRONG!\n");
+        fails++;
+    }
+
+    printf("After training [-1.0, 10.0] -> [1 > 2, 1 <= 2]:\t\t");
+    result = flower_predict(flower, (float[]){-1.f, 10.f});
+    print_array(result, 1U, 2U, 1U);
+    if (result[0] >= result[1]) {
+        printf("\t\t\t\t\t\t\t\tWRONG!\n");
+        fails++;
+    }
 
     // Print flower weight
     printf("Min flower size: %lu bytes\n", flower_estimate_min_size(flower));
@@ -727,7 +744,67 @@ uint8_t test_dense() {
     // Destroy metrics
     metrics_destroy(metrics);
 
-    return 0U;
+    // Destroy datasets
+    for (uint16_t i = 0; i < train_dataset_length; ++i) {
+        free(train_dataset_inputs[i]);
+        free(train_dataset_outputs[i]);
+    }
+    for (uint16_t i = 0; i < validation_dataset_length; ++i) {
+        free(validation_dataset_inputs[i]);
+        free(validation_dataset_outputs[i]);
+    }
+    free(train_dataset_inputs);
+    free(train_dataset_outputs);
+    free(validation_dataset_inputs);
+    free(validation_dataset_outputs);
+
+    return fails;
+}
+
+/**
+ * @brief Performs test of pseudo random number generator by validating rk_random_() and rk_float_() 5 times each
+ * NOTE: call rk_seed_(0) for that to work
+ *
+ * @return uint8_t number of fails (mismatches)
+ */
+uint8_t test_random() {
+    // Print about message
+    printf("\nChecking whether the PRNG works correctly\n");
+
+    // Fails counter
+    uint8_t fails = 0U;
+
+    // Test first 5 integers
+    if (rk_random_() != 2357136044U)
+        fails++;
+    if (rk_random_() != 2546248239U)
+        fails++;
+    if (rk_random_() != 3071714933U)
+        fails++;
+    if (rk_random_() != 3626093760U)
+        fails++;
+    if (rk_random_() != 2588848963U)
+        fails++;
+
+    // Test next 5 floats
+    if (rk_float_() != .85794562101364135742f)
+        fails++;
+    if (rk_float_() != .84725171327590942383f)
+        fails++;
+    if (rk_float_() != .62356370687484741211f)
+        fails++;
+    if (rk_float_() != .38438171148300170898f)
+        fails++;
+    if (rk_float_() != .29753458499908447266f)
+        fails++;
+
+    // Check
+    if (fails == 0)
+        printf("PRNG works correctly\n");
+    else
+        printf("PRNG DOES NOT WORK CORRECTLY!\n");
+
+    return fails;
 }
 
 /**
@@ -739,28 +816,35 @@ int main() {
     // Fails counter
     uint8_t fails = 0U;
 
-    // Set random seed
-    srand(0);
+    // Set random seed (seed must be 0 for test_random to work and also for results to be consistant)
+    // rk_seed_(time(NULL) & 0xFFFFFFFFUL);
+    rk_seed_(0);
+
+    printf("\n--------------------------------- BEGIN TESTS ----------------------------------\n");
+
+    // Validate random
+    fails += test_random();
+    printf("\n--------------------------------------------------------------------------------\n");
 
     // Test activation
     fails += test_activation_full();
-    printf("--------------------------------------------------------------------------------\n");
+    printf("\n--------------------------------------------------------------------------------\n");
 
     // Test loss
     fails += test_loss_full();
-    printf("--------------------------------------------------------------------------------\n");
+    printf("\n--------------------------------------------------------------------------------\n");
 
     // Test dropout
     fails += test_dropout();
-    printf("--------------------------------------------------------------------------------\n");
+    printf("\n--------------------------------------------------------------------------------\n");
 
     // Test normalization
     fails += test_normalization();
-    printf("--------------------------------------------------------------------------------\n");
+    printf("\n--------------------------------------------------------------------------------\n");
 
     // Test flower with dense petals
     fails += test_dense();
-    printf("--------------------------------------------------------------------------------\n");
+    printf("\n---------------------------------- END TESTS -----------------------------------\n");
 
     // Print number of fails during tests
     printf("\nFails: %u\n", fails);

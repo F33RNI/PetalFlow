@@ -32,6 +32,7 @@
 #include "optimizers.h"
 #include "petal.h"
 #include "weights.h"
+#include "random.h"
 
 /**
  * @brief Checks and initializers weights and gradients if needed
@@ -104,8 +105,7 @@ uint8_t weights_init(weights_s *weights, bool from_self) {
     // Uniform random distribution
     else if (weights->initializer == WEIGHTS_INIT_RANDOM_UNIFORM) {
         for (uint32_t i = 0; i < weights->length_total; ++i)
-            weights->weights[i] =
-                (((float) rand() / (float) RAND_MAX) * 2.0 * weights->deviation) + weights->center - weights->deviation;
+            weights->weights[i] = (rk_float_() * 2.0 * weights->deviation) + weights->center - weights->deviation;
     }
 
     // Gaussian normal distribution
@@ -114,8 +114,8 @@ uint8_t weights_init(weights_s *weights, bool from_self) {
         for (uint32_t i = 0; i < weights->length_total; i += 2) {
             do {
                 // x and y: -1 to 1
-                x = ((float) rand() / (float) RAND_MAX) * 2.f - 1.0;
-                y = ((float) rand() / (float) RAND_MAX) * 2.f - 1.0;
+                x = rk_float_() * 2.f - 1.0;
+                y = rk_float_() * 2.f - 1.0;
                 rsq = x * x + y * y;
             } while (rsq >= 1.f || rsq == 0.f);
 
@@ -256,8 +256,8 @@ uint8_t weights_update(weights_s *weights, optimizer_s *optimizer) {
 
             // Weights correction
             moment_hat = weights->moments[i] / (1.f - powf(optimizer->beta_1, (float) weights->_learning_step + 1.f));
-            velocity_hat =
-                weights->velocities_or_cache[i] / (1.f - powf(optimizer->beta_2, (float) weights->_learning_step + 1.f));
+            velocity_hat = weights->velocities_or_cache[i] /
+                           (1.f - powf(optimizer->beta_2, (float) weights->_learning_step + 1.f));
 
             // Update weights
             weights->weights[i] -= optimizer->learning_rate * moment_hat / (sqrtf(velocity_hat) + EPSILON);

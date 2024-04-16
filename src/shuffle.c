@@ -27,7 +27,7 @@
 
 #include "errors.h"
 #include "logger.h"
-#include "shuffle.h"
+#include "random.h"
 
 /**
  * @brief Shuffles internal arrays of 2d arrays
@@ -54,13 +54,14 @@ bool shuffle_2d(float **array_1, float **array_2, uint32_t array_length, uint32_
         return false;
     }
 
-    // This is useful if array_length > RAND_MAX to properly generate random numbers from 0 to array_length
-    uint32_t rand_multiplier = array_length / RAND_MAX + 1U;
-
     // Randomly swap elements
     for (uint32_t i = 0; i < array_length; i++) {
         // Generate random index
-        uint32_t move_to_index = ((uint32_t) rand() * (uint32_t) rand_multiplier) % array_length;
+        uint32_t move_to_index = rk_random_() % array_length;
+
+        // Ignore same index
+        if (i == move_to_index)
+            continue;
 
         // Swap elements in array_1
         memcpy(buffer_1, array_1[move_to_index], element_size_1);

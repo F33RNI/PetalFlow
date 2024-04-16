@@ -38,7 +38,7 @@ Shared library will be located inside `build` directory
 
 ## 🏗️ Getting started
 
-Below is an example of an extremely simple classifier capable of just comparing two numbers and showing whether the first number is greater than, equal to, or less than the second
+Below is an example of an extremely simple classifier capable of just comparing two numbers
 
 ![Alt text](demo_classifier_structure.jpg)
 
@@ -50,6 +50,7 @@ Below is an example of an extremely simple classifier capable of just comparing 
     #include <stdlib.h>
 
     #include "flower.h"
+    #include "random.h"
     ```
 
 2. Add functions to print array and create demo dataset
@@ -86,11 +87,11 @@ Below is an example of an extremely simple classifier capable of just comparing 
     }
 
     /**
-     * @brief Generates 2D array of random integers from -10 to 10 as floats
+     * @brief Generates 2D array of random floats from -10.0 to 10.0
      *
      * @param rows number of rows (outer array length)
      * @param cols number of elements in each internal array
-     * @return float** 2D array of random integers as floats
+     * @return float** 2D array of random floats
      */
     float **dense_generate_input_data(uint32_t rows, uint32_t cols) {
         // Allocate memory for the outer array (rows)
@@ -108,9 +109,9 @@ Below is an example of an extremely simple classifier capable of just comparing 
                 return NULL;
             }
 
-            // Populate the internal array with random float values
+            // Populate the internal array with random float values in (-10, 10] interval
             for (uint32_t col = 0; col < cols; ++col) {
-                array[row][col] = (float) (int16_t) (((float) rand() / RAND_MAX) * 10 - 5);
+                array[row][col] = rk_float_() * 20.f - 10.f;
             }
         }
         return array;
@@ -120,9 +121,9 @@ Below is an example of an extremely simple classifier capable of just comparing 
      * @brief Generates 2D array of expected outputs by comparing 1st and 2nd
      * elements of input_data array
      *
-     * @param input_data 2D array of random integers as floats
+     * @param input_data 2D array of random floats
      * @param rows number of rows (outer array length)
-     * @return float** true outputs (cols = 3)
+     * @return float** true outputs (cols = 2)
      */
     float **dense_generate_output_data(float **input_data, uint32_t rows) {
         // Allocate memory for the outer array (rows)
@@ -134,10 +135,10 @@ Below is an example of an extremely simple classifier capable of just comparing 
 
         for (uint32_t row = 0; row < rows; ++row) {
             // Allocate memory for each internal array (columns)
-            array[row] = (float *) calloc(3U, sizeof(float));
+            array[row] = (float *) calloc(2U, sizeof(float));
             if (!array[row]) {
                 printf("Error allocating array[row] for "
-                    "dense_generate_output_data!\n");
+                        "dense_generate_output_data!\n");
                 return NULL;
             }
 
@@ -145,13 +146,9 @@ Below is an example of an extremely simple classifier capable of just comparing 
             if (input_data[row][0] > input_data[row][1])
                 array[row][0] = 1.f;
 
-            // 1 = 2
-            else if (input_data[row][0] == input_data[row][1])
-                array[row][1] = 1.f;
-
-            // 1 < 2
+            // 1 <= 2
             else
-                array[row][2] = 1.f;
+                array[row][1] = 1.f;
         }
         return array;
     }
@@ -166,18 +163,19 @@ Below is an example of an extremely simple classifier capable of just comparing 
 
     ```c
     // Set random seed
-    srand(123);
+    // rk_seed_(time(NULL) & 0xFFFFFFFFUL);
+    rk_seed_(0);
 
-    // 500 numbers from -5 to 5: 80% train, 20% validation
-    uint32_t train_dataset_length = 400;
-    uint32_t validation_dataset_length = 100;
+    // 1000 numbers from -10 to 10: 80% train, 20% validation
+    uint32_t train_dataset_length = 800;
+    uint32_t validation_dataset_length = 200;
 
     // Generate validation datasets
     float **train_dataset_inputs = dense_generate_input_data(train_dataset_length, 2U);
     float **validation_dataset_inputs = dense_generate_input_data(validation_dataset_length, 2U);
     if (!train_dataset_inputs || !validation_dataset_inputs) {
         printf("train_dataset_inputs or validation_dataset_inputs allocation failed\n");
-        return -1;
+        return 1U;
     }
 
     // Generate outputs
@@ -186,7 +184,7 @@ Below is an example of an extremely simple classifier capable of just comparing 
         dense_generate_output_data(validation_dataset_inputs, validation_dataset_length);
     if (!train_dataset_outputs || !validation_dataset_outputs) {
         printf("train_dataset_outputs or est_dataset_outputs allocation failed\n");
-        return -1;
+        return 1U;
     }
     ```
 
@@ -267,9 +265,9 @@ Below is an example of an extremely simple classifier capable of just comparing 
                     &(weights_s){true, WEIGHTS_INIT_CONSTANT, 2U, NULL, NULL, 0.f, 1.f, NULL, NULL, 0U},
                     &(activation_s){ACTIVATION_RELU, 1.f, 0.f, 0.0f, 0.00f, 1.f, NULL}, 0.0f, 0.f, 1.f);
     petal_s *petal_output =
-        petal_init(PETAL_TYPE_DENSE_1D, false, &(petal_shape_s){1U, 2U, 1U, 0UL}, &(petal_shape_s){1U, 3U, 1U, 0UL},
+        petal_init(PETAL_TYPE_DENSE_1D, false, &(petal_shape_s){1U, 2U, 1U, 0UL}, &(petal_shape_s){1U, 2U, 1U, 0UL},
                     &(weights_s){true, WEIGHTS_INIT_XAVIER_GLOROT_GAUSSIAN, 6U, NULL, NULL, 0.f, 1.f, NULL, NULL, 0U},
-                    &(weights_s){true, WEIGHTS_INIT_CONSTANT, 3U, NULL, NULL, 0.f, 1.f, NULL, NULL, 0U},
+                    &(weights_s){true, WEIGHTS_INIT_CONSTANT, 2U, NULL, NULL, 0.f, 1.f, NULL, NULL, 0U},
                     &(activation_s){ACTIVATION_SOFTMAX, 1.f, 0.f, 0.0f, 0.01f, 1.f, NULL}, 0.0f, 0.f, 1.f);
     ```
 
@@ -287,27 +285,27 @@ Below is an example of an extremely simple classifier capable of just comparing 
     print_array(petal_hidden2->bias_weights->weights, 1U, 2U, 1U);
 
     printf("hidden 2 -> out weights:\n");
-    print_array(petal_output->weights->weights, 2U, 3U, 1U);
+    print_array(petal_output->weights->weights, 2U, 2U, 1U);
     printf("hidden 2 -> out bias weights:\n");
-    print_array(petal_output->bias_weights->weights, 1U, 3U, 1U);
+    print_array(petal_output->bias_weights->weights, 1U, 2U, 1U);
     ```
 
     ```text
     In -> hidden 1 weights:
-    0.5437  1.9291
-    0.5761  0.0142
+    0.0464  0.6727
+    0.7127  -1.2468
     In -> hidden 1 bias weights:
     0.0000  0.0000
     hidden 1 -> hidden 2 weights:
-    0.5512  -0.5755
-    -0.2741 1.4943
+    -0.2981 -0.2883
+    -0.7801 -0.4236
     hidden 1 -> hidden 2 bias weights:
     0.0000  0.0000
     hidden 2 -> out weights:
-    -0.0618 -2.1608 0.8753
-    0.9752  0.2948  0.8927
+    1.5173  -1.2947
+    -0.9410 0.3021
     hidden 2 -> out bias weights:
-    0.0000  0.0000  0.0000
+    0.0000  0.0000
     ```
 
 6. Initialize flower
@@ -332,12 +330,12 @@ Below is an example of an extremely simple classifier capable of just comparing 
 
     ```c
     // Show prediction before training
-    printf("Before training [1.0, 2.0] -> [1 > 2, 1 == 2, 1 < 2]:\t\t");
-    print_array(flower_predict(flower, (float[]){1.f, 2.f}), 1U, 3U, 1U);
+    printf("Before training [1.0, 2.0] -> [1 > 2, 1 <= 2]:\t\t");
+    print_array(flower_predict(flower, (float[]){1.f, 2.f}), 1U, 2U, 1U);
     ```
 
     ```text
-    Before training [1.0, 2.0] -> [1 > 2, 1 == 2, 1 < 2]:           0.0989  0.6936  0.2075
+    Before training [1.0, 2.0] -> [1 > 2, 1 <= 2]:          0.5000  0.5000
     ```
 
 8. Initialize optimizer and metrics
@@ -358,7 +356,7 @@ Below is an example of an extremely simple classifier capable of just comparing 
 
     ```c
     // Initialize optimizer
-    optimizer_s optimizer = (optimizer_s){OPTIMIZER_ADAM, .1f, 0.f, .89f, .99f};
+    optimizer_s optimizer = (optimizer_s){OPTIMIZER_ADAM, .01f, 0.f, .89f, .99f};
 
     // Initialize metrics
     metrics_s *metrics = metrics_init(1);
@@ -411,40 +409,43 @@ Below is an example of an extremely simple classifier capable of just comparing 
     ```
 
     ```text
-    [2024-02-26 00:23:41] [INFO] [flower_train] Training started
-    [2024-02-26 00:23:41] [INFO] [flower_train] Epoch: 1/10
-    [====================] 10/10 | 00:00:00 | Tloss:   0.8024 | Tacc:  60.00% | Vloss:   1.0109 | Vacc:  67.33%
-    [2024-02-26 00:23:41] [INFO] [flower_train] Epoch: 2/10
-    [====================] 10/10 | 00:00:00 | Tloss:   0.7931 | Tacc:  60.00% | Vloss:   0.9701 | Vacc:  67.33%
-    [2024-02-26 00:23:41] [INFO] [flower_train] Epoch: 3/10
-    [====================] 10/10 | 00:00:00 | Tloss:   0.7703 | Tacc:  78.33% | Vloss:   0.8245 | Vacc:  73.33%
-    [2024-02-26 00:23:41] [INFO] [flower_train] Epoch: 4/10
-    [====================] 10/10 | 00:00:00 | Tloss:   0.4864 | Tacc:  90.00% | Vloss:   0.5614 | Vacc:  84.67%
-    [2024-02-26 00:23:41] [INFO] [flower_train] Epoch: 5/10
-    [====================] 10/10 | 00:00:00 | Tloss:   0.3254 | Tacc:  93.33% | Vloss:   0.3961 | Vacc:  88.00%
-    [2024-02-26 00:23:41] [INFO] [flower_train] Epoch: 6/10
-    [====================] 10/10 | 00:00:00 | Tloss:   0.2256 | Tacc:  93.33% | Vloss:   0.2979 | Vacc:  89.33%
-    [2024-02-26 00:23:41] [INFO] [flower_train] Epoch: 7/10
-    [==============>     ]  7/10 | 00:00:06 | Tloss:   0.2180 | Tacc:  95.00% | Vloss:   0.2135 | Vacc:  97.33%
+    [2024-04-16 00:28:45] [INFO] [flower_train] Training started
+    [2024-04-16 00:28:45] [INFO] [flower_train] Epoch: 1/10
+    [====================] 20/20 | 00:00:00 | Tloss:   0.2788 | Tacc:  95.00% | Vloss:   0.2481 | Vacc:  93.50%
+    [2024-04-16 00:28:45] [INFO] [flower_train] Epoch: 2/10
+    [====================] 20/20 | 00:00:00 | Tloss:   0.1589 | Tacc:  92.50% | Vloss:   0.1467 | Vacc:  96.00%
+    [2024-04-16 00:28:45] [INFO] [flower_train] Epoch: 3/10
+    [====================] 20/20 | 00:00:00 | Tloss:   0.1022 | Tacc:  95.00% | Vloss:   0.1076 | Vacc:  95.50%
+    [2024-04-16 00:28:45] [INFO] [flower_train] Epoch: 4/10
+    [====================] 20/20 | 00:00:00 | Tloss:   0.0770 | Tacc:  97.50% | Vloss:   0.0761 | Vacc:  96.50%
+    [2024-04-16 00:28:45] [INFO] [flower_train] Epoch: 5/10
+    [====================] 20/20 | 00:00:00 | Tloss:   0.0519 | Tacc: 100.00% | Vloss:   0.0515 | Vacc:  98.50%
+    [2024-04-16 00:28:45] [INFO] [flower_train] Epoch: 6/10
+    [====================] 20/20 | 00:00:00 | Tloss:   0.0199 | Tacc: 100.00% | Vloss:   0.0334 | Vacc:  99.00%
+    [2024-04-16 00:28:45] [INFO] [flower_train] Epoch: 7/10
+    [=============>      ] 20/20 | 00:00:00 | Tloss:   0.0109 | Tacc: 100.00% | Vloss:   0.0185 | Vacc: 100.00%
     ...
     ```
 
 10. Test the result
 
     ```c
-    // Test training result on new data
-    printf("After training [1.0, 20.0] -> [1 > 2, 1 == 2, 1 < 2]:\t\t");
-    print_array(flower_predict(flower, (float[]){1.f, 20.f}), 1U, 3U, 1U);
-    printf("After training [5.0, 5.0] -> [1 > 2, 1 == 2, 1 < 2]:\t\t");
-    print_array(flower_predict(flower, (float[]){5.f, 5.f}), 1U, 3U, 1U);
-    printf("After training [-1.0, -100.0] -> [1 > 2, 1 == 2, 1 < 2]:\t");
-    print_array(flower_predict(flower, (float[]){-1.f, -100.f}), 1U, 3U, 1U);
+    // Test training result on a new data
+    float *result;
+    printf("After training [1.0, 10.0] -> [1 > 2, 1 <= 2]:\t\t");
+    result = flower_predict(flower, (float[]){1.f, 10.f});
+    printf("After training [20.0, 10.0] -> [1 > 2, 1 <= 2]:\t\t");
+    result = flower_predict(flower, (float[]){20.f, 10.f});
+    print_array(result, 1U, 2U, 1U);
+    printf("After training [-1.0, 10.0] -> [1 > 2, 1 <= 2]:\t\t");
+    result = flower_predict(flower, (float[]){-1.f, 10.f});
+    print_array(result, 1U, 2U, 1U);
     ```
 
     ```text
-    After training [1.0, 20.0] -> [1 > 2, 1 == 2, 1 < 2]:           0.0000  0.0000  1.0000
-    After training [5.0, 5.0] -> [1 > 2, 1 == 2, 1 < 2]:            0.0000  0.5291  0.4709
-    After training [-1.0, -100.0] -> [1 > 2, 1 == 2, 1 < 2]:        0.9722  0.0274  0.0004
+    After training [1.0, 10.0] -> [1 > 2, 1 <= 2]:          0.0072  0.9928
+    After training [20.0, 10.0] -> [1 > 2, 1 <= 2]:         0.9339  0.0661
+    After training [-1.0, 10.0] -> [1 > 2, 1 <= 2]:         0.0072  0.9928
     ```
 
 11. Free memory
@@ -491,6 +492,20 @@ Below is an example of an extremely simple classifier capable of just comparing 
 
     // Destroy metrics
     metrics_destroy(metrics);
+
+    // Destroy datasets
+    for (uint16_t i = 0; i < train_dataset_length; ++i) {
+        free(train_dataset_inputs[i]);
+        free(train_dataset_outputs[i]);
+    }
+    for (uint16_t i = 0; i < validation_dataset_length; ++i) {
+        free(validation_dataset_inputs[i]);
+        free(validation_dataset_outputs[i]);
+    }
+    free(train_dataset_inputs);
+    free(train_dataset_outputs);
+    free(validation_dataset_inputs);
+    free(validation_dataset_outputs);
     ```
 
 ----------

@@ -27,6 +27,7 @@
 #include "dropout.h"
 #include "errors.h"
 #include "logger.h"
+#include "random.h"
 
 /**
  * @brief Sets bits to 1 on indices to drop
@@ -46,15 +47,12 @@ void dropout_generate_indices(bit_array_s *bit_array, float dropout_ratio) {
         return;
     }
 
-    // This is useful if bit_array->length > RAND_MAX to properly generate random numbers from 0 to bit_array->length
-    uint32_t rand_multiplier = bit_array->length / RAND_MAX + 1U;
-
     // Drop random indexes
     uint32_t drop_counter = 0U;
     uint32_t index_to_drop;
     while (drop_counter < indices_n_to_drop) {
         // Generate random index
-        index_to_drop = ((uint32_t) rand() * (uint32_t) rand_multiplier) % bit_array->length;
+        index_to_drop = rk_random_() % bit_array->length;
 
         // Ignore if already dropped
         if (!bit_array_get_bit(bit_array, index_to_drop)) {
