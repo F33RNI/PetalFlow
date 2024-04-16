@@ -48,9 +48,11 @@ bit_array_s *bit_array_init(uint32_t size_bits) {
     // Reset error
     bit_array->error_code = ERROR_NONE;
 
-    // Calculate the number of BIT_ARRAY_TYPE needed to represent size_bits and initialize array with zeros
-    bit_array->data =
-        (BIT_ARRAY_TYPE *) calloc((size_bits + (BIT_ARRAY_BITS - 1U)) / BIT_ARRAY_BITS, sizeof(BIT_ARRAY_TYPE));
+    // Calculate the number of BIT_ARRAY_TYPE needed to represent size_bits
+    bit_array->_length_in_types = (size_bits + (BIT_ARRAY_BITS - 1U)) / BIT_ARRAY_BITS;
+
+    // Initialize array with zeros
+    bit_array->data = (BIT_ARRAY_TYPE *) calloc(bit_array->_length_in_types, sizeof(BIT_ARRAY_TYPE));
     if (!bit_array->data) {
         logger(LOG_E, "bit_array_init", "Error allocating memory for bit_array->data");
         bit_array->error_code = ERROR_MALLOC;
@@ -119,6 +121,17 @@ bool bit_array_get_bit(bit_array_s *bit_array, uint32_t index) {
     // Return bit state
     return ((bit_array->data[index / BIT_ARRAY_BITS] >> index % (BIT_ARRAY_TYPE) BIT_ARRAY_BITS) &
             (BIT_ARRAY_TYPE) 1) != (BIT_ARRAY_TYPE) 0;
+}
+
+/**
+ * @brief Inverts bit array (inverts each bit in it)
+ *
+ * @param bit_array pointer to bit_array_s struct
+ */
+void bit_array_not(bit_array_s *bit_array) {
+    for (uint32_t i = 0; i < bit_array->_length_in_types; ++i) {
+        bit_array->data[i] = ~bit_array->data[i];
+    }
 }
 
 /**

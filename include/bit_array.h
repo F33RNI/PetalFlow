@@ -36,11 +36,14 @@
  * @param data pointer to array of BIT_ARRAY_TYPE numbers
  * @param length length of array in BIT_ARRAY_TYPE
  * @param error_code initialization or runtime error code
+ * @param _length_in_types internal length of *data array measured in BIT_ARRAY_TYPEs
  */
 typedef struct {
     BIT_ARRAY_TYPE *data;
     uint32_t length;
     uint8_t error_code;
+
+    uint32_t _length_in_types;
 } bit_array_s;
 
 bit_array_s *bit_array_init(uint32_t size_bits);
@@ -50,6 +53,8 @@ void bit_array_set_bit(bit_array_s *bit_array, uint32_t index);
 void bit_array_clear_bit(bit_array_s *bit_array, uint32_t index);
 
 bool bit_array_get_bit(bit_array_s *bit_array, uint32_t index);
+
+void bit_array_not(bit_array_s *bit_array);
 
 void bit_array_clear(bit_array_s *bit_array);
 

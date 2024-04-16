@@ -398,12 +398,11 @@ uint8_t test_loss_full() {
 /**
  * @brief Tests dropout bit array generation
  *
+ * @param bit_size array size
+ * @param target_ratio how many indices to drop in % (ratio 0 to 1)
  * @return uint8_t number of fails (0 or 1)
  */
-uint8_t test_dropout() {
-    // Test data
-    uint32_t bit_size = 50U;
-    float target_ratio = 0.2;
+uint8_t test_dropout(uint32_t bit_size, float target_ratio) {
     printf("\nTesting dropout on array with size %u and ratio: %.2f\n", bit_size, target_ratio);
 
     // Initialize array of bits
@@ -455,9 +454,8 @@ uint8_t test_normalization() {
     petal_shape_s output_shape = (petal_shape_s){1U, 12U, 1U, 0UL};
     printf("\nTesting normalization petals\n");
 
-    // 1D
-    petal_s *petal =
-        petal_init(PETAL_TYPE_NORMALIZE_ALL, false, &input_shape, &output_shape, NULL, NULL, NULL, 0.f, 0.f, 1.f);
+    // 1D (with default petal_params_s)
+    petal_s *petal = petal_init(PETAL_TYPE_NORMALIZE_ALL, false, &input_shape, &output_shape, NULL, NULL, NULL, NULL);
     printf("1D (PETAL_TYPE_NORMALIZE_ALL) Input data:\n");
     print_array(inputs, input_shape.rows, input_shape.cols, input_shape.depth);
     printf("Normalized:\n");
@@ -480,13 +478,12 @@ uint8_t test_normalization() {
     petal_destroy(petal, true, true, true);
     printf("\n");
 
-    // 2D
+    // 2D (with default petal_params_s)
     input_shape.rows = 3U;
     input_shape.cols = 4U;
     output_shape.rows = 3U;
     output_shape.cols = 4U;
-    petal =
-        petal_init(PETAL_TYPE_NORMALIZE_IN_ROWS, false, &input_shape, &output_shape, NULL, NULL, NULL, 0.f, 0.f, 1.f);
+    petal = petal_init(PETAL_TYPE_NORMALIZE_IN_ROWS, false, &input_shape, &output_shape, NULL, NULL, NULL, NULL);
     printf("2D (PETAL_TYPE_NORMALIZE_IN_ROWS) Input data:\n");
     print_array(inputs, input_shape.rows, input_shape.cols, input_shape.depth);
     printf("Normalized:\n");
@@ -509,15 +506,14 @@ uint8_t test_normalization() {
     petal_destroy(petal, true, true, true);
     printf("\n");
 
-    // 3D
+    // 3D (with default petal_params_s)
     input_shape.rows = 3U;
     input_shape.cols = 2U;
     input_shape.depth = 2U;
     output_shape.rows = 3U;
     output_shape.cols = 2U;
     output_shape.depth = 2U;
-    petal = petal_init(PETAL_TYPE_NORMALIZE_IN_CHANNELS, false, &input_shape, &output_shape, NULL, NULL, NULL, 0.f, 0.f,
-                       1.f);
+    petal = petal_init(PETAL_TYPE_NORMALIZE_IN_CHANNELS, false, &input_shape, &output_shape, NULL, NULL, NULL, NULL);
     printf("3D (PETAL_TYPE_NORMALIZE_IN_CHANNELS) Input data:\n");
     print_array(inputs, input_shape.rows, input_shape.cols, input_shape.depth);
     printf("Normalized:\n");
@@ -647,17 +643,17 @@ uint8_t test_dense() {
         petal_init(PETAL_TYPE_DENSE_1D, true, &(petal_shape_s){1U, 2U, 1U, 0UL}, &(petal_shape_s){1U, 2U, 1U, 0UL},
                    &(weights_s){true, WEIGHTS_INIT_XAVIER_GLOROT_GAUSSIAN, 4U, NULL, NULL, 0.f, 1.f, NULL, NULL, 0U},
                    &(weights_s){true, WEIGHTS_INIT_CONSTANT, 2U, NULL, NULL, 0.f, 1.f, NULL, NULL, 0U},
-                   &(activation_s){ACTIVATION_RELU, 1.f, 0.f, 0.0f, 0.00f, 1.f, NULL}, 0.0f, 0.f, 1.f);
+                   &(activation_s){ACTIVATION_RELU, 1.f, 0.f, 0.0f, 0.00f, 1.f, NULL}, NULL);
     petal_s *petal_hidden2 =
         petal_init(PETAL_TYPE_DENSE_1D, false, &(petal_shape_s){1U, 2U, 1U, 0UL}, &(petal_shape_s){1U, 2U, 1U, 0UL},
                    &(weights_s){true, WEIGHTS_INIT_XAVIER_GLOROT_GAUSSIAN, 4U, NULL, NULL, 0.f, 1.f, NULL, NULL, 0U},
                    &(weights_s){true, WEIGHTS_INIT_CONSTANT, 2U, NULL, NULL, 0.f, 1.f, NULL, NULL, 0U},
-                   &(activation_s){ACTIVATION_RELU, 1.f, 0.f, 0.0f, 0.00f, 1.f, NULL}, 0.0f, 0.f, 1.f);
+                   &(activation_s){ACTIVATION_RELU, 1.f, 0.f, 0.0f, 0.00f, 1.f, NULL}, NULL);
     petal_s *petal_output =
         petal_init(PETAL_TYPE_DENSE_1D, false, &(petal_shape_s){1U, 2U, 1U, 0UL}, &(petal_shape_s){1U, 2U, 1U, 0UL},
                    &(weights_s){true, WEIGHTS_INIT_XAVIER_GLOROT_GAUSSIAN, 6U, NULL, NULL, 0.f, 1.f, NULL, NULL, 0U},
                    &(weights_s){true, WEIGHTS_INIT_CONSTANT, 2U, NULL, NULL, 0.f, 1.f, NULL, NULL, 0U},
-                   &(activation_s){ACTIVATION_SOFTMAX, 1.f, 0.f, 0.0f, 0.01f, 1.f, NULL}, 0.0f, 0.f, 1.f);
+                   &(activation_s){ACTIVATION_SOFTMAX, 1.f, 0.f, 0.0f, 0.01f, 1.f, NULL}, NULL);
 
     // Print weights
     printf("In -> hidden 1 weights:\n");
@@ -810,11 +806,11 @@ uint8_t test_random() {
 /**
  * @brief Automatically performs tests of most function
  *
- * @return int 0 in all test passed, -1 otherwise
+ * @return int 0 if all test passed, number of fails otherwise
  */
 int main() {
     // Fails counter
-    uint8_t fails = 0U;
+    uint16_t fails = 0U;
 
     // Set random seed (seed must be 0 for test_random to work and also for results to be consistant)
     // rk_seed_(time(NULL) & 0xFFFFFFFFUL);
@@ -835,7 +831,10 @@ int main() {
     printf("\n--------------------------------------------------------------------------------\n");
 
     // Test dropout
-    fails += test_dropout();
+    fails += test_dropout(50U, 0.f);
+    fails += test_dropout(50U, .2f);
+    fails += test_dropout(50U, .8f);
+    fails += test_dropout(50U, 1.f);
     printf("\n--------------------------------------------------------------------------------\n");
 
     // Test normalization
@@ -849,9 +848,8 @@ int main() {
     // Print number of fails during tests
     printf("\nFails: %u\n", fails);
 
-    if (fails == 0U) {
+    if (fails == 0U)
         printf("All tests passed successfully!\n");
-        return 0;
-    }
-    return -1;
+
+    return fails;
 }

@@ -67,14 +67,15 @@
  * relu_leak - leak amount (for ACTIVATION_RELU only). Default = 0.01,
  * elu_alpha - the value to which an ELU saturates for negative net inputs (for ACTIVATION_ELU only). Default = 0.01,
  * swish_beta - beta for turning Swish into E-Swish (for ACTIVATION_SWISH only). Default = 1.0
- * @param dropout ratio of dropped outputs (0 to 1)
- * @param center center of normalization for PETAL_TYPE_NORMALIZE_... Default: 0.0
- * @param deviation deviation of normalization for PETAL_TYPE_NORMALIZE_... Default: 1.0
+ * @param params - pointer to petal_params_s struct(for dropout / normalization)
+ * or NULL if it doesn't need / default values are ok:
+ * dropout - ratio of dropped outputs (0 to 1) (Default: 0.0)
+ * center - center of normalization for PETAL_TYPE_NORMALIZE_... (Default: 0.0)
+ * deviation - deviation of normalization for PETAL_TYPE_NORMALIZE_... (Default: 1.0)
  * @return petal_s* petal's struct
  */
 petal_s *petal_init(uint8_t petal_type, bool first, petal_shape_s *input_shape, petal_shape_s *output_shape,
-                    weights_s *weights, weights_s *bias_weights, activation_s *activation, float dropout, float center,
-                    float deviation) {
+                    weights_s *weights, weights_s *bias_weights, activation_s *activation, petal_params_s *params) {
     // Log
     logger(LOG_I, "petal_init", "Initializing petal with type: %u", petal_type);
 
@@ -96,12 +97,23 @@ petal_s *petal_init(uint8_t petal_type, bool first, petal_shape_s *input_shape, 
     petal->weights = weights;
     petal->bias_weights = bias_weights;
     petal->activation = activation;
-    petal->dropout = dropout;
-    petal->center = center;
-    petal->deviation = deviation;
     petal->bit_array = NULL;
     if (petal->activation)
         petal->activation->_derivatives_temp = NULL;
+
+    // Copy params
+    if (params) {
+        petal->params.dropout = params->dropout;
+        petal->params.center = params->center;
+        petal->params.deviation = params->deviation;
+    }
+
+    // Initialize params with default values
+    else {
+        petal->params.dropout = 0.f;
+        petal->params.center = 0.f;
+        petal->params.deviation = 1.f;
+    }
 
     // Check petal type
     if (petal_type > PETAL_TYPE_MAX) {
@@ -152,7 +164,7 @@ petal_s *petal_init(uint8_t petal_type, bool first, petal_shape_s *input_shape, 
     }
 
     // Initialize dropout
-    if (dropout > 0.f) {
+    if (petal->params.dropout > 0.f) {
         petal->bit_array = bit_array_init(output_shape->length);
         if (petal->bit_array->error_code != ERROR_NONE) {
             logger(LOG_E, "petal_init", "Dropout bit array initialization error: %s",

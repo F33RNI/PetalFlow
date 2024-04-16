@@ -61,6 +61,18 @@ typedef struct {
 } petal_shape_s;
 
 /**
+ * @struct petal_params_s
+ * Stores simple (non-pointers) optional parameters for dropout and normalization
+ *
+ * @param dropout ratio of dropped outputs (0 to 1)
+ * @param center center of normalization for PETAL_TYPE_NORMALIZE_...
+ * @param deviation deviation of normalization for PETAL_TYPE_NORMALIZE_...
+ */
+typedef struct {
+    float dropout, center, deviation;
+} petal_params_s;
+
+/**
  * @struct petal_s
  * Stores petal's data
  *
@@ -69,7 +81,7 @@ typedef struct {
  * @param weights - pointers to weights_s structs
  * @param bias_weights - pointers to weights_s structs
  * @param activation - pointer to activation_s struct
- * @param dropout - ratio of dropped outputs (0 to 1)
+ * @param params - petal_params_s struct (for dropout / normalization)
  * @param bit_array_s - pointer to bit_array_s struct that stores indices to drop
  * @param output - petal outputs
  * @param error_on_input - petal input state during backpropagation
@@ -81,7 +93,7 @@ typedef struct {
     petal_shape_s *input_shape, *output_shape;
     weights_s *weights, *bias_weights;
     activation_s *activation;
-    float dropout, center, deviation;
+    petal_params_s params;
 
     bit_array_s *bit_array;
     float *output, *error_on_input;
@@ -89,8 +101,8 @@ typedef struct {
 } petal_s;
 
 petal_s *petal_init(uint8_t petal_type, bool first, petal_shape_s *input_shape, petal_shape_s *output_shape,
-                    weights_s *weights, weights_s *bias_weights, activation_s *activation, float dropout, float center,
-                    float deviation);
+                    weights_s *weights, weights_s *bias_weights, activation_s *activation,
+                    petal_params_s *petal_params);
 
 void petal_forward(petal_s *petal, float *input, bool training);
 

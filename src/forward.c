@@ -38,12 +38,12 @@
 void petal_forward(petal_s *petal, float *input, bool training) {
     // Calculate dropout
     bool dropout_enabled = false;
-    if (training && petal->dropout > 0.f && petal->bit_array) {
+    if (training && petal->params.dropout > 0.f && petal->bit_array) {
         // Clear previous dropout
         bit_array_clear(petal->bit_array);
 
         // Generate new dropout
-        dropout_generate_indices(petal->bit_array, petal->dropout);
+        dropout_generate_indices(petal->bit_array, petal->params.dropout);
         if (petal->bit_array->error_code != ERROR_NONE) {
             logger(LOG_E, "petal_forward", "Error generating dropout indices: %s",
                    error_to_str[petal->bit_array->error_code]);
@@ -82,7 +82,8 @@ void petal_forward(petal_s *petal, float *input, bool training) {
                 petal->output[i] = 0.f;
             else {
                 petal->output[i] = ((input[i] - min_value) / (max_value - min_value + EPSILON));
-                petal->output[i] = petal->output[i] * 2.f * petal->deviation + petal->center - petal->deviation;
+                petal->output[i] =
+                    petal->output[i] * 2.f * petal->params.deviation + petal->params.center - petal->params.deviation;
             }
         }
     }
@@ -113,8 +114,8 @@ void petal_forward(petal_s *petal, float *input, bool training) {
                     petal->output[index] = 0.f;
                 else {
                     petal->output[index] = ((input[index] - min_value) / (max_value - min_value + EPSILON));
-                    petal->output[index] =
-                        petal->output[index] * 2.f * petal->deviation + petal->center - petal->deviation;
+                    petal->output[index] = petal->output[index] * 2.f * petal->params.deviation + petal->params.center -
+                                           petal->params.deviation;
                 }
             }
         }
@@ -143,8 +144,8 @@ void petal_forward(petal_s *petal, float *input, bool training) {
                     petal->output[index] = 0.f;
                 else {
                     petal->output[index] = ((input[index] - min_value) / (max_value - min_value + EPSILON));
-                    petal->output[index] =
-                        petal->output[index] * 2.f * petal->deviation + petal->center - petal->deviation;
+                    petal->output[index] = petal->output[index] * 2.f * petal->params.deviation + petal->params.center -
+                                           petal->params.deviation;
                 }
             }
         }
@@ -195,7 +196,7 @@ void petal_forward(petal_s *petal, float *input, bool training) {
 
     // Normalize sum after activation if dropout is enabled
     if (dropout_enabled) {
-        float dropout_scaling = 1.f / (1.f - petal->dropout + EPSILON);
+        float dropout_scaling = 1.f / (1.f - petal->params.dropout + EPSILON);
         for (uint32_t i = 0; i < petal->output_shape->length; ++i)
             if (petal->output[i] != 0.f)
                 petal->output[i] *= dropout_scaling;
