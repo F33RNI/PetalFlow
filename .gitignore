@@ -1,6 +1,8 @@
-.vscode/
-docs/
-build/
+.vscode
+.venv
+venv
+docs
+build
 petalflow
 run.txt
 *.o
@@ -9,3 +11,4 @@ Numbers demo classifier structure.drawio
 test/example.c
 repository-open-graph.xcf
 repository-open-graph.png
+test.*
